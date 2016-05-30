@@ -12,6 +12,8 @@ import okhttp3.Response;
  */
 public class MyOkHttpClient {
 
+    String baseUrl;
+
     public OkHttpClient getClient(final String accessToken, final String consumerSecret,
                                   final String accessSecret){
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -21,7 +23,7 @@ public class MyOkHttpClient {
                 Request original = chain.request();
                 HttpUrl originalHttpUrl = original.url();
                 String method = original.method();
-                String baseUrl = originalHttpUrl.toString();
+                baseUrl = originalHttpUrl.toString();
                 String paramsOfBaseUrl = "";
 
                 if(baseUrl.contains("?")) {
@@ -38,13 +40,17 @@ public class MyOkHttpClient {
                         .addQueryParameter("oauth_version", "1.0");
 
                 String params = builder.toString() + paramsOfBaseUrl;
-                params = params.replace(baseUrl+"?", "");
+                params = sortParamsInAlphabeticOrder(baseUrl, params.replace(baseUrl+"?", ""));
+                //params = params.replace(baseUrl+"?", "");
                 String signature = new SignatureGenerator()
                         .getSignature(method, baseUrl, consumerSecret,accessSecret, params);
                 builder.addQueryParameter("oauth_signature", signature);
 
                 HttpUrl url = builder.build();
-                String finalUrl = url.toString() + paramsOfBaseUrl;
+                String finalUrl = baseUrl+ "?" + sortParamsInAlphabeticOrder(baseUrl, url.toString() + paramsOfBaseUrl);
+                //String finalUrl = url.toString() + paramsOfBaseUrl;
+
+
                 // Request customization: add request headers
                 Request.Builder requestBuilder = original.newBuilder()
                         .url(finalUrl);
@@ -54,5 +60,42 @@ public class MyOkHttpClient {
             }
         });
         return httpClient.build();
+    }
+
+    /*
+      s1.compareTo(s2)
+      result:
+      0 s1 = s2
+      >0 s2 < s1
+      <0 s2 > s1
+    */
+
+    public static String sortParamsInAlphabeticOrder(String baseUrl,String totalUrl){
+        String sortedUrl = totalUrl.replace(baseUrl+"?", "");
+        String[] ampersantSplited = sortedUrl.split("&");
+
+        for(int i = 0; i < ampersantSplited.length; i++){
+            for(int j = i+1; j < ampersantSplited.length; j++){
+                String[] splitedI = ampersantSplited[i].split("=");
+                String[] splitedJ = ampersantSplited[j].split("=");
+                //it means that splitedJ[1] lexicographically less than splitedI[1]
+                if(splitedI[0].compareTo(splitedJ[0]) > 0){
+                    String temp = ampersantSplited[i];
+                    ampersantSplited[i] = ampersantSplited[j];
+                    ampersantSplited[j] = temp;
+                }
+            }
+        }
+        sortedUrl = "";
+        for(String param: ampersantSplited){
+            if(sortedUrl.equals("")) {
+                sortedUrl += param;
+            }
+            else{
+                sortedUrl += "&" + param;
+            }
+        }
+
+        return sortedUrl;
     }
 }

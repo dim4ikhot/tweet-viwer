@@ -105,7 +105,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             try{
                 Call<List<CommonStatusClass>> callStatuses =
-                        Internet.service.getStatuses(Internet.verifyCredentials.getScreenName());
+                        Internet.service.getStatuses(Internet.verifyCredentials.getScreenName(),1);
                 statuses = callStatuses.execute().body();
 
                 Call<List<CommonStatusClass>> callHomeStatuses =

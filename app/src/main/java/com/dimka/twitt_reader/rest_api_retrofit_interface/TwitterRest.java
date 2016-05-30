@@ -29,7 +29,7 @@ public interface TwitterRest {
     Call<NewStatusResult> sendNewStatus(@Query("status") String textStatus);
 
     @GET("statuses/user_timeline.json")
-    Call<List<CommonStatusClass>> getStatuses(@Query("screen_name") String screenName);
+    Call<List<CommonStatusClass>> getStatuses(@Query("screen_name") String screenName, @Query("count") int count);
 
     @GET("statuses/home_timeline.json")
     Call<List<CommonStatusClass>> getHomeTimeline();

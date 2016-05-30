@@ -81,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    String correct = MyOkHttpClient.sortParamsInAlphabeticOrder("https://api.twitter.com/1.1/statuses/home_timeline.json",
+                            "https://api.twitter.com/1.1/statuses/home_timeline.json?oauth_version=1%2E0&oauth_consumer_key=fRuPxDVC1J58r05jdJIDn7qCJ&oauth_nonce=fc7a26742d8b307f3a94d98c498a56d8&oauth_signature=oek0fJOkahQzkzLp2lbkwLGu4tg%3D&oauth_signature_method=HMAC%2DSHA1&oauth_timestamp=1464203403&oauth_token=3996686661%2DZrhwq55zZpMV83YudVke38hm8oeECSNXrwwsati&count=5&user_id=333");
                 }
             });
         }
