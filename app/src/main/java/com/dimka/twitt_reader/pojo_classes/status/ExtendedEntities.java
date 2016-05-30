@@ -11,14 +11,14 @@ public class ExtendedEntities {
 
     @SerializedName("media")
     @Expose
-    private List<Medium__> media = new ArrayList<Medium__>();
+    private List<Medium> media = new ArrayList<>();
 
     /**
      *
      * @return
      * The media
      */
-    public List<Medium__> getMedia() {
+    public List<Medium> getMedia() {
         return media;
     }
 
@@ -27,7 +27,7 @@ public class ExtendedEntities {
      * @param media
      * The media
      */
-    public void setMedia(List<Medium__> media) {
+    public void setMedia(List<Medium> media) {
         this.media = media;
     }
 

@@ -30,72 +30,75 @@ public class UserTimeline {
     @Expose
     private Boolean truncated;
 
-    @SerializedName("entities")
+    @SerializedName("entities") //correct
     @Expose
     private Entities_ entities;
 
-    @SerializedName("source")
+    @SerializedName("source")//correct
     @Expose
     private String source;
 
-    @SerializedName("in_reply_to_status_id")
+    @SerializedName("in_reply_to_status_id")//correct
     @Expose
     private Object inReplyToStatusId;
 
-    @SerializedName("in_reply_to_status_id_str")
+    @SerializedName("in_reply_to_status_id_str")//correct
     @Expose
     private Object inReplyToStatusIdStr;
 
-    @SerializedName("in_reply_to_user_id")
+    @SerializedName("in_reply_to_user_id")//correct
     @Expose
     private Object inReplyToUserId;
 
-    @SerializedName("in_reply_to_user_id_str")
+    @SerializedName("in_reply_to_user_id_str")//correct
     @Expose
     private Object inReplyToUserIdStr;
 
-    @SerializedName("in_reply_to_screen_name")
+    @SerializedName("in_reply_to_screen_name")//correct
     @Expose
     private Object inReplyToScreenName;
 
-    @SerializedName("user")
+    @SerializedName("user") //correct
     @Expose
     private User user;
 
-    @SerializedName("geo")
+    @SerializedName("geo")//correct
     @Expose
     private Object geo;
 
-    @SerializedName("coordinates")
+    @SerializedName("coordinates")//correct
     @Expose
     private Object coordinates;
 
-    @SerializedName("place")
+    @SerializedName("place")//correct
     @Expose
     private Object place;
 
-    @SerializedName("contributors")
+    @SerializedName("contributors")//correct
     @Expose
     private Object contributors;
 
-    @SerializedName("is_quote_status")
+    @SerializedName("is_quote_status")//correct
     @Expose
     private Boolean isQuoteStatus;
 
-    @SerializedName("retweet_count")
+    @SerializedName("retweet_count")//correct
     @Expose
     private Integer retweetCount;
 
-    @SerializedName("favorite_count")
+    @SerializedName("favorite_count")//correct
     @Expose
     private Integer favoriteCount;
-    @SerializedName("favorited")
+
+    @SerializedName("favorited")//correct
     @Expose
     private Boolean favorited;
-    @SerializedName("retweeted")
+
+    @SerializedName("retweeted")//correct
     @Expose
     private Boolean retweeted;
-    @SerializedName("lang")
+
+    @SerializedName("lang")//correct
     @Expose
     private String lang;
 

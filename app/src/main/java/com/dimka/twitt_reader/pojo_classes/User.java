@@ -9,127 +9,169 @@ import com.google.gson.annotations.SerializedName;
 @Generated("org.jsonschema2pojo")
 public class User {
 
-    @SerializedName("id")
+    @SerializedName("id")//correct
     @Expose
     private long id;
-    @SerializedName("id_str")
+
+    @SerializedName("id_str")//correct
     @Expose
     private String idStr;
-    @SerializedName("name")
+
+    @SerializedName("name")//correct
     @Expose
     private String name;
-    @SerializedName("screen_name")
+
+    @SerializedName("screen_name")//correct
     @Expose
     private String screenName;
-    @SerializedName("location")
+
+    @SerializedName("location")//correct
     @Expose
     private String location;
-    @SerializedName("description")
+
+    @SerializedName("description")//correct
     @Expose
     private String description;
-    @SerializedName("url")
+
+    @SerializedName("url")//correct
     @Expose
-    private String url;
-    @SerializedName("entities")
+    private Object url;
+
+    @SerializedName("entities")//correct
     @Expose
     private Entities entities;
-    @SerializedName("protected")
+
+    @SerializedName("protected")//correct
     @Expose
     private Boolean _protected;
-    @SerializedName("followers_count")
+
+    @SerializedName("followers_count")//correct
     @Expose
     private Integer followersCount;
-    @SerializedName("friends_count")
+
+    @SerializedName("friends_count")//correct
     @Expose
     private Integer friendsCount;
-    @SerializedName("listed_count")
+
+    @SerializedName("listed_count")//correct
     @Expose
     private Integer listedCount;
-    @SerializedName("created_at")
+
+    @SerializedName("created_at")//correct
     @Expose
     private String createdAt;
-    @SerializedName("favourites_count")
+
+    @SerializedName("favourites_count")//correct
     @Expose
     private Integer favouritesCount;
-    @SerializedName("utc_offset")
+
+    @SerializedName("utc_offset")//correct
     @Expose
-    private Integer utcOffset;
-    @SerializedName("time_zone")
+    private Object utcOffset;
+
+    @SerializedName("time_zone")//correct
     @Expose
-    private String timeZone;
-    @SerializedName("geo_enabled")
+    private Object timeZone;
+
+    @SerializedName("geo_enabled")//correct
     @Expose
     private Boolean geoEnabled;
-    @SerializedName("verified")
+
+    @SerializedName("verified")//correct
     @Expose
     private Boolean verified;
-    @SerializedName("statuses_count")
+
+    @SerializedName("statuses_count")//correct
     @Expose
     private Integer statusesCount;
-    @SerializedName("lang")
+
+    @SerializedName("lang")//correct
     @Expose
     private String lang;
-    @SerializedName("contributors_enabled")
+
+    @SerializedName("contributors_enabled")//correct
     @Expose
     private Boolean contributorsEnabled;
-    @SerializedName("is_translator")
+
+    @SerializedName("is_translator")//correct
     @Expose
     private Boolean isTranslator;
-    @SerializedName("is_translation_enabled")
+
+    @SerializedName("is_translation_enabled")//Correct
     @Expose
     private Boolean isTranslationEnabled;
-    @SerializedName("profile_background_color")
+
+    @SerializedName("profile_background_color")//correct
     @Expose
     private String profileBackgroundColor;
-    @SerializedName("profile_background_image_url")
+
+    @SerializedName("profile_background_image_url")//correct
     @Expose
     private String profileBackgroundImageUrl;
-    @SerializedName("profile_background_image_url_https")
+
+    @SerializedName("profile_background_image_url_https")//correct
     @Expose
     private String profileBackgroundImageUrlHttps;
-    @SerializedName("profile_background_tile")
+
+    @SerializedName("profile_background_tile")//correct
     @Expose
     private Boolean profileBackgroundTile;
-    @SerializedName("profile_image_url")
+
+    @SerializedName("profile_image_url")//correct
     @Expose
     private String profileImageUrl;
-    @SerializedName("profile_image_url_https")
+
+    @SerializedName("profile_image_url_https")//correct
     @Expose
     private String profileImageUrlHttps;
+
+
     @SerializedName("profile_banner_url")
     @Expose
     private String profileBannerUrl;
-    @SerializedName("profile_link_color")
+
+
+    @SerializedName("profile_link_color")//correct
     @Expose
     private String profileLinkColor;
-    @SerializedName("profile_sidebar_border_color")
+
+    @SerializedName("profile_sidebar_border_color")//correct
     @Expose
     private String profileSidebarBorderColor;
-    @SerializedName("profile_sidebar_fill_color")
+
+    @SerializedName("profile_sidebar_fill_color")//correct
     @Expose
     private String profileSidebarFillColor;
-    @SerializedName("profile_text_color")
+
+    @SerializedName("profile_text_color")//correct
     @Expose
     private String profileTextColor;
-    @SerializedName("profile_use_background_image")
+
+    @SerializedName("profile_use_background_image")//correct
     @Expose
     private Boolean profileUseBackgroundImage;
-    @SerializedName("has_extended_profile")
+
+    @SerializedName("has_extended_profile")//correct
     @Expose
     private Boolean hasExtendedProfile;
-    @SerializedName("default_profile")
+
+    @SerializedName("default_profile")//correct
     @Expose
     private Boolean defaultProfile;
-    @SerializedName("default_profile_image")
+
+    @SerializedName("default_profile_image")//correct
     @Expose
     private Boolean defaultProfileImage;
-    @SerializedName("following")
+
+    @SerializedName("following")//correct
     @Expose
     private Boolean following;
-    @SerializedName("follow_request_sent")
+
+    @SerializedName("follow_request_sent")//correct
     @Expose
     private Boolean followRequestSent;
-    @SerializedName("notifications")
+
+    @SerializedName("notifications")//correct
     @Expose
     private Boolean notifications;
 
@@ -246,7 +288,7 @@ public class User {
      * @return
      * The url
      */
-    public String getUrl() {
+    public Object getUrl() {
         return url;
     }
 
@@ -390,7 +432,7 @@ public class User {
      * @return
      * The utcOffset
      */
-    public Integer getUtcOffset() {
+    public Object getUtcOffset() {
         return utcOffset;
     }
 
@@ -408,7 +450,7 @@ public class User {
      * @return
      * The timeZone
      */
-    public String getTimeZone() {
+    public Object getTimeZone() {
         return timeZone;
     }
 
@@ -655,29 +697,16 @@ public class User {
         this.profileImageUrlHttps = profileImageUrlHttps;
     }
 
-    /**
-     *
-     * @return
-     * The profileBannerUrl
-     */
+
     public String getProfileBannerUrl() {
         return profileBannerUrl;
     }
 
-    /**
-     *
-     * @param profileBannerUrl
-     * The profile_banner_url
-     */
     public void setProfileBannerUrl(String profileBannerUrl) {
         this.profileBannerUrl = profileBannerUrl;
     }
 
-    /**
-     *
-     * @return
-     * The profileLinkColor
-     */
+
     public String getProfileLinkColor() {
         return profileLinkColor;
     }

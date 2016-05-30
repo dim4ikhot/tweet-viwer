@@ -19,7 +19,7 @@ public class Entities_ {
 
     @SerializedName("hashtags") //correct
     @Expose
-    private List<Hashtag> hashtags = new ArrayList<Hashtag>();
+    private List<Hashtag> hashtags = new ArrayList<>();
 
     @SerializedName("symbols")//correct
     @Expose
@@ -27,11 +27,12 @@ public class Entities_ {
 
     @SerializedName("user_mentions")//correct
     @Expose
-    private List<UserMention> userMentions = new ArrayList<UserMention>();
+    private List<UserMention> userMentions = new ArrayList<>();
 
     @SerializedName("urls")//correct
     @Expose
-    private List<Url> urls = new ArrayList<Url>();
+    //private List<Url> urls = new ArrayList<Url>();
+    private List<Object> urls = new ArrayList<Object>();
 
     @SerializedName("media")
     @Expose
@@ -96,7 +97,7 @@ public class Entities_ {
      * @return
      * The urls
      */
-    public List<Url> getUrls() {
+    public List<Object> getUrls() {
         return urls;
     }
 
@@ -105,24 +106,15 @@ public class Entities_ {
      * @param urls
      * The urls
      */
-    public void setUrls(List<Url> urls) {
+    public void setUrls(List<Object> urls) {
         this.urls = urls;
     }
 
-    /**
-     *
-     * @return
-     * The media
-     */
+
     public List<Medium> getMedia() {
         return media;
     }
 
-    /**
-     *
-     * @param media
-     * The media
-     */
     public void setMedia(List<Medium> media) {
         this.media = media;
     }

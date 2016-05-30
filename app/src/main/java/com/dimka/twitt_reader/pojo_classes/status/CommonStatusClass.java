@@ -14,40 +14,45 @@ public class CommonStatusClass {
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private long id;
+
     @SerializedName("id_str")
     @Expose
     private String idStr;
+
     @SerializedName("text")
     @Expose
     private String text;
+
     @SerializedName("truncated")
     @Expose
     private Boolean truncated;
+
     @SerializedName("entities")
     @Expose
     private Entities_ entities;
     @SerializedName("extended_entities")
     @Expose
     private ExtendedEntities extendedEntities;
-    @SerializedName("source")
+    @SerializedName("source")//+
     @Expose
     private String source;
-    @SerializedName("in_reply_to_status_id")
+    @SerializedName("in_reply_to_status_id")//+
     @Expose
     private Object inReplyToStatusId;
-    @SerializedName("in_reply_to_status_id_str")
+    @SerializedName("in_reply_to_status_id_str")//+
     @Expose
     private Object inReplyToStatusIdStr;
-    @SerializedName("in_reply_to_user_id")
+    @SerializedName("in_reply_to_user_id")//+
     @Expose
     private Object inReplyToUserId;
-    @SerializedName("in_reply_to_user_id_str")
+    @SerializedName("in_reply_to_user_id_str")//+
     @Expose
     private Object inReplyToUserIdStr;
-    @SerializedName("in_reply_to_screen_name")
+    @SerializedName("in_reply_to_screen_name")//+
     @Expose
     private Object inReplyToScreenName;
     @SerializedName("user")
@@ -74,19 +79,19 @@ public class CommonStatusClass {
     @SerializedName("favorite_count")
     @Expose
     private Integer favoriteCount;
-    @SerializedName("favorited")
+    @SerializedName("favorited")//+
     @Expose
     private Boolean favorited;
     @SerializedName("retweeted")
     @Expose
     private Boolean retweeted;
-    @SerializedName("possibly_sensitive")
+    @SerializedName("possibly_sensitive")//+
     @Expose
     private Boolean possiblySensitive;
-    @SerializedName("possibly_sensitive_appealable")
+    @SerializedName("possibly_sensitive_appealable")//+
     @Expose
     private Boolean possiblySensitiveAppealable;
-    @SerializedName("lang")
+    @SerializedName("lang")//+
     @Expose
     private String lang;
 
@@ -113,7 +118,7 @@ public class CommonStatusClass {
      * @return
      * The id
      */
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 

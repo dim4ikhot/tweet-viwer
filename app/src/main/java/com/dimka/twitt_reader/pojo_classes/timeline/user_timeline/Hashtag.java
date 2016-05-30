@@ -15,7 +15,7 @@ public class Hashtag {
 
     @SerializedName("indices")//corect
     @Expose
-    private List<Integer> indices = new ArrayList<Integer>();
+    private List<Integer> indices = new ArrayList<>();
 
     /**
      *

@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName;
 @Generated("org.jsonschema2pojo")
 public class Thumb {
 
-    @SerializedName("w")
+    @SerializedName("w")//+
     @Expose
     private Integer w;
-    @SerializedName("h")
+    @SerializedName("h")//+
     @Expose
     private Integer h;
-    @SerializedName("resize")
+    @SerializedName("resize")//+
     @Expose
     private String resize;
 

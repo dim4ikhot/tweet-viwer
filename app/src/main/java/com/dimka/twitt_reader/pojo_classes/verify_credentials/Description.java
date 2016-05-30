@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 @Generated("org.jsonschema2pojo")
 public class Description {
 
-    @SerializedName("urls")
+    @SerializedName("urls")//correct
     @Expose
     private List<Object> urls = new ArrayList<Object>();
 

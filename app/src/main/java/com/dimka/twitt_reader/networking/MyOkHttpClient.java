@@ -23,6 +23,7 @@ public class MyOkHttpClient {
                 String method = original.method();
                 String baseUrl = originalHttpUrl.toString();
                 String paramsOfBaseUrl = "";
+
                 if(baseUrl.contains("?")) {
                     paramsOfBaseUrl = "&" + baseUrl.substring(baseUrl.indexOf("?")+1, baseUrl.length());
                     baseUrl = baseUrl.substring(0,baseUrl.indexOf("?"));

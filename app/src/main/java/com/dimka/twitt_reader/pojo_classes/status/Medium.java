@@ -9,34 +9,34 @@ import com.google.gson.annotations.SerializedName;
 @Generated("org.jsonschema2pojo")
 public class Medium {
 
-    @SerializedName("id")
+    @SerializedName("id")//correct
     @Expose
-    private Integer id;
-    @SerializedName("id_str")
+    private long id;
+    @SerializedName("id_str")//correct
     @Expose
     private String idStr;
-    @SerializedName("indices")
+    @SerializedName("indices")//+
     @Expose
-    private List<Integer> indices = new ArrayList<Integer>();
-    @SerializedName("media_url")
+    private List<Integer> indices = new ArrayList<>();
+    @SerializedName("media_url")//+
     @Expose
     private String mediaUrl;
-    @SerializedName("media_url_https")
+    @SerializedName("media_url_https")//+
     @Expose
     private String mediaUrlHttps;
-    @SerializedName("url")
+    @SerializedName("url")//+
     @Expose
     private String url;
-    @SerializedName("display_url")
+    @SerializedName("display_url")//+
     @Expose
     private String displayUrl;
-    @SerializedName("expanded_url")
+    @SerializedName("expanded_url")//+
     @Expose
     private String expandedUrl;
-    @SerializedName("type")
+    @SerializedName("type")//+
     @Expose
     private String type;
-    @SerializedName("sizes")
+    @SerializedName("sizes")//+
     @Expose
     private Sizes sizes;
 
@@ -45,7 +45,7 @@ public class Medium {
      * @return
      * The id
      */
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 

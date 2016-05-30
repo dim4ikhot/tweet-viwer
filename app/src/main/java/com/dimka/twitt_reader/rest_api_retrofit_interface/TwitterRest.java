@@ -1,13 +1,10 @@
 package com.dimka.twitt_reader.rest_api_retrofit_interface;
 
-import com.dimka.twitt_reader.pojo_classes.Error.Errors;
 import com.dimka.twitt_reader.pojo_classes.account_settings.AccauntSettings;
 import com.dimka.twitt_reader.pojo_classes.new_status.NewStatusResult;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
-import com.dimka.twitt_reader.pojo_classes.timeline.user_timeline.UserTimeline;
 import com.dimka.twitt_reader.pojo_classes.verify_credentials.VerifyCredentials;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,11 +29,8 @@ public interface TwitterRest {
     Call<NewStatusResult> sendNewStatus(@Query("status") String textStatus);
 
     @GET("statuses/user_timeline.json")
-    Call<List<UserTimeline>> getStatuses(@Query("count") int count);
+    Call<List<CommonStatusClass>> getStatuses(@Query("screen_name") String screenName);
 
-    @GET("statuses/user_timeline.json")
-    Call<List<UserTimeline>> getStatuses();
-
-    @GET("statuses/user_timeline.json")
-    Call<Errors> getStatusesError(@Query("count") int count);
+    @GET("statuses/home_timeline.json")
+    Call<List<CommonStatusClass>> getHomeTimeline();
 }

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
@@ -95,13 +97,21 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private class UserTimeLineAsync extends AsyncTask<Void,Void,Void>{
 
-        List<UserTimeline> statuses = new ArrayList<>();
+        List<CommonStatusClass> statuses = new ArrayList<>();
+        List<CommonStatusClass> homeStatuses = new ArrayList<>();
+        List<Object> objects = new ArrayList<>();
 
         @Override
         protected Void doInBackground(Void... params) {
             try{
-                Call<List<UserTimeline>> callStatuses = Internet.service.getStatuses(1);
+                Call<List<CommonStatusClass>> callStatuses =
+                        Internet.service.getStatuses(Internet.verifyCredentials.getScreenName());
                 statuses = callStatuses.execute().body();
+
+                Call<List<CommonStatusClass>> callHomeStatuses =
+                        Internet.service.getHomeTimeline();
+                //objects = callHomeStatuses.execute().body();
+                homeStatuses = callHomeStatuses.execute().body();
             }catch(Exception e){
                 e.printStackTrace();
             }

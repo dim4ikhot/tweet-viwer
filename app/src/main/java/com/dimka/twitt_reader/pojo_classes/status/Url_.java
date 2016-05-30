@@ -11,14 +11,14 @@ public class Url_ {
 
     @SerializedName("urls")
     @Expose
-    private List<Url__> urls = new ArrayList<Url__>();
+    private List<Url> urls = new ArrayList<>();
 
     /**
      *
      * @return
      * The urls
      */
-    public List<Url__> getUrls() {
+    public List<Url> getUrls() {
         return urls;
     }
 
@@ -27,7 +27,7 @@ public class Url_ {
      * @param urls
      * The urls
      */
-    public void setUrls(List<Url__> urls) {
+    public void setUrls(List<Url> urls) {
         this.urls = urls;
     }
 

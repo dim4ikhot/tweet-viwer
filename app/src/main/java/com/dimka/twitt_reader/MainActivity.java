@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class getAccauntInfo extends AsyncTask<Void,Void,String>{
+    public static class getAccauntInfo extends AsyncTask<Void,Void,String>{
 
         Context context;
         Bitmap bmp = null;
@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             Call<VerifyCredentials> verifyCredentialsCall = Internet.service.getVerifyCredentials();
             String profileImage = "";
             try {
-                accauntSettings = result.execute().body();
                 Internet.verifyCredentials = verifyCredentialsCall.execute().body();
                 profileImage = Internet.verifyCredentials.getProfileImageUrlHttps();
             }catch(Exception e){
@@ -123,10 +122,10 @@ public class MainActivity extends AppCompatActivity {
             String title = Internet.verifyCredentials.getName().length() > 20?
                     Internet.verifyCredentials.getName().substring(0,19) + "...":
                     Internet.verifyCredentials.getName();
-            profile.setTitle(title);
+            ((MainActivity)context).profile.setTitle(title);
             if(bmp != null) {
                 BitmapDrawable bmpDrawable = new BitmapDrawable(context.getResources(), bmp);
-                profile.setIcon(bmpDrawable);
+                ((MainActivity)context).profile.setIcon(bmpDrawable);
             }
             //Toast.makeText(context,"Welcome " + result,Toast.LENGTH_LONG).show();
         }
@@ -191,14 +190,16 @@ public class MainActivity extends AppCompatActivity {
                 dialog.setArguments(params);
                 dialog.show(getSupportFragmentManager(), "AuthorizeDialog");
             }
-            Internet.retrofit = new MyRetrofitBuilder()
-                    .getRetrofit("https://api.twitter.com/1.1/",
-                            new MyOkHttpClient()
-                                    .getClient(accessToken.getToken(), consumerSecret,accessToken.getTokenSecret()));
+            else {
+                Internet.retrofit = new MyRetrofitBuilder()
+                        .getRetrofit("https://api.twitter.com/1.1/",
+                                new MyOkHttpClient()
+                                        .getClient(accessToken.getToken(), consumerSecret, accessToken.getTokenSecret()));
 
-            Internet.service = Internet.retrofit.create(TwitterRest.class);
+                Internet.service = Internet.retrofit.create(TwitterRest.class);
 
-            new getAccauntInfo(MainActivity.this).execute((Void)null);
+                new getAccauntInfo(MainActivity.this).execute((Void) null);
+            }
         }
     }
 
@@ -323,7 +324,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void onPostExecute(AccessToken result){
-            twitterActivity.setKeysAfterSuccessAuthorised(accessToken.getToken(),accessToken.getTokenSecret(),true);
+            twitterActivity.setKeysAfterSuccessAuthorised(accessToken.getToken(),
+                    accessToken.getTokenSecret(),true);
+            Internet.retrofit = new MyRetrofitBuilder()
+                    .getRetrofit("https://api.twitter.com/1.1/",
+                            new MyOkHttpClient()
+                                    .getClient(accessToken.getToken(),
+                                            twitterActivity.consumerSecret,
+                                            accessToken.getTokenSecret()));
+
+            Internet.service = Internet.retrofit.create(TwitterRest.class);
+
+            new getAccauntInfo(twitterActivity.getApplicationContext()).execute((Void) null);
         }
     }
 
