@@ -21,17 +21,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.dimka.twitt_reader.list_adapters.TweetsViewAdapter;
 import com.dimka.twitt_reader.networking.MyOkHttpClient;
 import com.dimka.twitt_reader.networking.MyRetrofitBuilder;
 import com.dimka.twitt_reader.pojo_classes.account_settings.AccauntSettings;
+import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
 import com.dimka.twitt_reader.pojo_classes.verify_credentials.VerifyCredentials;
 import com.dimka.twitt_reader.rest_api_retrofit_interface.TwitterRest;
 import com.dimka.twitt_reader.tweet.NewTweetActivity;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     String consumerKey;
     String consumerSecret;
     AccauntSettings accauntSettings;
-
+    ListView homeTimeline;
 
     MenuItem profile;
 
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        homeTimeline = (ListView)(findViewById(R.id.all_tweets));
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         consumerKey = getResources().getString(R.string.consumer_key);
         consumerSecret = getResources().getString(R.string.consumer_secret);
@@ -92,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         Context context;
         Bitmap bmp = null;
+        List<CommonStatusClass> homeStatuses = new ArrayList<>();
 
         public getAccauntInfo(Context ctx){
             context = ctx;
@@ -101,10 +108,13 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             Call<AccauntSettings> result = Internet.service.accauntSettings();
             Call<VerifyCredentials> verifyCredentialsCall = Internet.service.getVerifyCredentials();
+            Call<List<CommonStatusClass>> callHomeStatuses =
+                    Internet.service.getHomeTimeline(5);
             String profileImage = "";
             try {
                 Internet.verifyCredentials = verifyCredentialsCall.execute().body();
                 profileImage = Internet.verifyCredentials.getProfileImageUrlHttps();
+                homeStatuses = callHomeStatuses.execute().body();
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -127,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
             if(bmp != null) {
                 BitmapDrawable bmpDrawable = new BitmapDrawable(context.getResources(), bmp);
                 ((MainActivity)context).profile.setIcon(bmpDrawable);
+            }
+            if(homeStatuses != null){
+                TweetsViewAdapter adapter = new TweetsViewAdapter(context, homeStatuses);
+                ((MainActivity)context).homeTimeline.setAdapter(adapter);
             }
             //Toast.makeText(context,"Welcome " + result,Toast.LENGTH_LONG).show();
         }

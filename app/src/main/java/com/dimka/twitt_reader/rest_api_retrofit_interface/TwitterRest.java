@@ -32,5 +32,5 @@ public interface TwitterRest {
     Call<List<CommonStatusClass>> getStatuses(@Query("screen_name") String screenName, @Query("count") int count);
 
     @GET("statuses/home_timeline.json")
-    Call<List<CommonStatusClass>> getHomeTimeline();
+    Call<List<CommonStatusClass>> getHomeTimeline(@Query("count") int count);
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -25,6 +25,7 @@ public class NewTweetActivity extends AppCompatActivity {
 
     EditText newTweet;
     MenuItem charsCount;
+    ActionBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,11 @@ public class NewTweetActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         newTweet = (EditText)findViewById(R.id.input_new_tweet);
+        bar = getSupportActionBar();
+        if(bar != null){
+            bar.setDisplayHomeAsUpEnabled(true);
+            bar.setHomeButtonEnabled(true);
+        }
         TextChangedListener();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if ( fab != null) {
@@ -77,6 +83,16 @@ public class NewTweetActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.new_tweet_menu, menu);
         charsCount = menu.findItem(R.id.chars_count);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public class SendNewTweet extends AsyncTask<String, Void, Boolean>{
