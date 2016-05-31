@@ -28,4 +28,11 @@
 
     <!--HINTS-->
     <string name="hint_new_tweet">What do you want to share?</string>
+    <string name="title_activity_edit_profile">EditProfileActivity</string>
+    <string name="hint_edit_profile_name">Name</string>
+    <string name="hint_edit_profile_place">Place</string>
+    <string name="hint_edit_profile_web_site">Web-site</string>
+    <string name="hint_edit_profile_about_myself">About myself</string>
+    <string name="hint_edit_profile_image_caption">Photo</string>
+    <string name="hint_edit_profile_background_caption">Background</string>
 </resources>

@@ -1,12 +1,14 @@
 package com.dimka.twitt_reader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -28,6 +30,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ViewProfileActivity extends AppCompatActivity {
+
+    public static final int PROFILE_EDIT = 0;
 
     ImageView headerImage, profileImage;
     Button editProfile;
@@ -56,6 +60,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         fullName = (TextView)findViewById(R.id.profile_full_name);
         screenName = (TextView)findViewById(R.id.profile_screen_name);
         usersTweets = (ListView)findViewById(R.id.usersTweets);
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(ViewProfileActivity.this,EditProfileActivity.class), PROFILE_EDIT);
+            }
+        });
         fillsControl();
     }
 
@@ -66,6 +76,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private class LoadProfileParams extends AsyncTask<Void,Void,Void>{
         Context context;
         Bitmap bmpBackground, bmpProfileIcon;
+        List<CommonStatusClass> statuses = new ArrayList<>();
 
         public LoadProfileParams(Context ctx){
             context = ctx;
@@ -76,7 +87,11 @@ public class ViewProfileActivity extends AppCompatActivity {
             if(Internet.verifyCredentials != null){
                 String backgroundURL = Internet.verifyCredentials.getProfileBackgroundImageUrlHttps();
                 String profileImage = Internet.verifyCredentials.getProfileImageUrlHttps();
+                Call<List<CommonStatusClass>> callStatuses =
+                        Internet.service.getStatuses(
+                                Internet.verifyCredentials.getScreenName(),2);
                 try {
+                    statuses = callStatuses.execute().body();
                     bmpBackground = Picasso.with(context).load(backgroundURL).get();
                     bmpProfileIcon = Picasso.with(context).load(profileImage).get();
                 }catch(Exception e){
@@ -102,7 +117,10 @@ public class ViewProfileActivity extends AppCompatActivity {
             String screenNameText = "@"+Internet.verifyCredentials.getScreenName();
             screenName.setText(screenNameText);
 
-            new UserTimeLineAsync(context).execute((Void)null);
+            if(statuses != null){
+                TweetsViewAdapter adapter = new TweetsViewAdapter(context, statuses);
+                usersTweets.setAdapter(adapter);
+            }
         }
     }
 
@@ -117,40 +135,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class UserTimeLineAsync extends AsyncTask<Void,Void,Void>{
-
-        List<CommonStatusClass> statuses = new ArrayList<>();
-        List<CommonStatusClass> homeStatuses = new ArrayList<>();
-        List<Object> objects = new ArrayList<>();
-        Context context;
-
-        public UserTimeLineAsync(Context ctx){
-            context = ctx;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try{
-                Call<List<CommonStatusClass>> callStatuses =
-                        Internet.service.getStatuses(Internet.verifyCredentials.getScreenName(),2);
-                statuses = callStatuses.execute().body();
-
-                Call<List<CommonStatusClass>> callHomeStatuses =
-                        Internet.service.getHomeTimeline(2);
-                //objects = callHomeStatuses.execute().body();
-                homeStatuses = callHomeStatuses.execute().body();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result){
-            if(statuses != null){
-                TweetsViewAdapter adapter = new TweetsViewAdapter(context, statuses);
-                usersTweets.setAdapter(adapter);
-            }
-        }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,Intent data){
+        //change name, images
+        super.onActivityResult(requestCode,resultCode,data);
     }
+
 }

@@ -29,17 +29,17 @@
                     android:scheme="x-oauthflow-twitter" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".tweet.NewTweetActivity"
             android:label="@string/title_activity_new_tweet"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ViewProfileActivity"
-            android:label="@string/title_activity_view_profile">
-
-        </activity>
+            android:label="@string/title_activity_view_profile"></activity>
+        <activity
+            android:name=".EditProfileActivity"
+            android:label="@string/title_activity_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -108,8 +108,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             Call<AccauntSettings> result = Internet.service.accauntSettings();
             Call<VerifyCredentials> verifyCredentialsCall = Internet.service.getVerifyCredentials();
-            Call<List<CommonStatusClass>> callHomeStatuses =
-                    Internet.service.getHomeTimeline(5);
+            Call<List<CommonStatusClass>> callHomeStatuses = Internet.service.getHomeTimeline(5);
             String profileImage = "";
             try {
                 Internet.verifyCredentials = verifyCredentialsCall.execute().body();
@@ -142,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 TweetsViewAdapter adapter = new TweetsViewAdapter(context, homeStatuses);
                 ((MainActivity)context).homeTimeline.setAdapter(adapter);
             }
-            //Toast.makeText(context,"Welcome " + result,Toast.LENGTH_LONG).show();
         }
     }
 
@@ -350,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 
             Internet.service = Internet.retrofit.create(TwitterRest.class);
 
-            new getAccauntInfo(twitterActivity.getApplicationContext()).execute((Void) null);
+            new getAccauntInfo(twitterActivity).execute((Void) null);
         }
     }
 
