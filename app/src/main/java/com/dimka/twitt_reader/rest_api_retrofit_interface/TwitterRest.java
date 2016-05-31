@@ -33,4 +33,16 @@ public interface TwitterRest {
 
     @GET("statuses/home_timeline.json")
     Call<List<CommonStatusClass>> getHomeTimeline(@Query("count") int count);
+
+    //POST
+    //https://api.twitter.com/1.1/account/update_profile.json
+    // parameters: "name","url","location","description"
+
+    //POST
+    //https://api.twitter.com/1.1/account/update_profile_image.json
+    //parameters: "image" in base64 encoded. max size 700 Kb.
+
+    //POST
+    //https://api.twitter.com/1.1/account/update_profile_background_image.json
+    //parameters: "image"
 }
