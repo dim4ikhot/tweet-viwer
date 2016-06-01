@@ -35,7 +35,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     ImageView headerImage, profileImage;
     Button editProfile;
-    TextView readingCount, readersCount, fullName, screenName;
+    TextView readingCount, readersCount, fullName, screenName, aboutMySelf, place, site;
     ListView usersTweets;
     ActionBar bar;
 
@@ -60,6 +60,9 @@ public class ViewProfileActivity extends AppCompatActivity {
         fullName = (TextView)findViewById(R.id.profile_full_name);
         screenName = (TextView)findViewById(R.id.profile_screen_name);
         usersTweets = (ListView)findViewById(R.id.usersTweets);
+        aboutMySelf = (TextView)findViewById(R.id.profile_about_myself);
+        place = (TextView)findViewById(R.id.profile_place);
+        site = (TextView)findViewById(R.id.profile_site);
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,6 +120,28 @@ public class ViewProfileActivity extends AppCompatActivity {
             String screenNameText = "@"+Internet.currentUser.getScreenName();
             screenName.setText(screenNameText);
 
+            if(!Internet.currentUser.getDescription().equals("")) {
+                aboutMySelf.setText(Internet.currentUser.getDescription());
+                aboutMySelf.setVisibility(View.VISIBLE);
+            }
+            else{
+                aboutMySelf.setVisibility(View.GONE);
+            }
+            if(!Internet.currentUser.getLocation().equals("")) {
+                place.setText(Internet.currentUser.getLocation());
+                place.setVisibility(View.VISIBLE);
+            }
+            else{
+                place.setVisibility(View.GONE);
+            }
+            if(Internet.currentUser.getEntities().getUrl() != null) {
+                site.setText(Internet.currentUser.getEntities().getUrl().getUrls().get(0).getDisplayUrl());
+                site.setVisibility(View.VISIBLE);
+            }
+            else{
+                site.setVisibility(View.GONE);
+            }
+
             if(statuses != null){
                 TweetsViewAdapter adapter = new TweetsViewAdapter(context, statuses);
                 usersTweets.setAdapter(adapter);
@@ -138,6 +163,9 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode,Intent data){
         //change name, images
+        if(requestCode == PROFILE_EDIT) {
+            fillsControl();
+        }
         super.onActivityResult(requestCode,resultCode,data);
     }
 

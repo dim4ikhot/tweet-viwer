@@ -70,7 +70,6 @@
             android:id="@+id/item_name"
             android:shadowColor="@color/colorPrimary"
             android:hint="@string/hint_edit_profile_name"
-            android:textSize="20sp"
             android:textColor="@android:color/black"
             android:textStyle="bold"/>
 
@@ -79,7 +78,6 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:id="@+id/item_place"
-            android:textSize="20sp"
             android:hint="@string/hint_edit_profile_place"
             android:textColor="@android:color/black"
             android:textStyle="bold"/>
@@ -89,7 +87,6 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:id="@+id/item_web_site"
-            android:textSize="20sp"
             android:hint="@string/hint_edit_profile_web_site"
             android:textColor="@android:color/black"
             android:textStyle="bold"/>
@@ -99,7 +96,6 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:id="@+id/item_about"
-            android:textSize="20sp"
             android:hint="@string/hint_edit_profile_about_myself"
             android:textColor="@android:color/black"
             android:textStyle="bold"/>

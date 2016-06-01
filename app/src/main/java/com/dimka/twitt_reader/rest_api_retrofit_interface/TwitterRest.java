@@ -45,7 +45,8 @@ public interface TwitterRest {
                                @Query("description") String description);
     // parameters: "name","url","location","description"
 
-    //POST
+    @POST("account/update_profile_image.json")
+    Call<User> updateProfileImage(@Query("image") String base64String);
     //https://api.twitter.com/1.1/account/update_profile_image.json
     //parameters: "image" in base64 encoded. max size 700 Kb.
 
