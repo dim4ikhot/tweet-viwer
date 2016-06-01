@@ -84,12 +84,12 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if(Internet.verifyCredentials != null){
-                String backgroundURL = Internet.verifyCredentials.getProfileBackgroundImageUrlHttps();
-                String profileImage = Internet.verifyCredentials.getProfileImageUrlHttps();
+            if(Internet.currentUser != null){
+                String backgroundURL = Internet.currentUser.getProfileBackgroundImageUrlHttps();
+                String profileImage = Internet.currentUser.getProfileImageUrlHttps();
                 Call<List<CommonStatusClass>> callStatuses =
                         Internet.service.getStatuses(
-                                Internet.verifyCredentials.getScreenName(),2);
+                                Internet.currentUser.getScreenName(),2);
                 try {
                     statuses = callStatuses.execute().body();
                     bmpBackground = Picasso.with(context).load(backgroundURL).get();
@@ -109,12 +109,12 @@ public class ViewProfileActivity extends AppCompatActivity {
             if(bmpProfileIcon != null) {
                 profileImage.setImageBitmap(bmpProfileIcon);
             }
-            String reading = "" + Internet.verifyCredentials.getFriendsCount();
+            String reading = "" + Internet.currentUser.getFriendsCount();
             readingCount.setText(reading);
-            String readers = "" + Internet.verifyCredentials.getFollowersCount();
+            String readers = "" + Internet.currentUser.getFollowersCount();
             readersCount.setText(readers);
-            fullName.setText(Internet.verifyCredentials.getName());
-            String screenNameText = "@"+Internet.verifyCredentials.getScreenName();
+            fullName.setText(Internet.currentUser.getName());
+            String screenNameText = "@"+Internet.currentUser.getScreenName();
             screenName.setText(screenNameText);
 
             if(statuses != null){

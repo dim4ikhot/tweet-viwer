@@ -2,7 +2,7 @@ package com.dimka.twitt_reader.pojo_classes.timeline.user_timeline;
 
 import javax.annotation.Generated;
 
-import com.dimka.twitt_reader.pojo_classes.User;
+import com.dimka.twitt_reader.pojo_classes.current_user.User;
 import com.dimka.twitt_reader.pojo_classes.verify_credentials.Entities_;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,6 +1,7 @@
 package com.dimka.twitt_reader.rest_api_retrofit_interface;
 
 import com.dimka.twitt_reader.pojo_classes.account_settings.AccauntSettings;
+import com.dimka.twitt_reader.pojo_classes.current_user.User;
 import com.dimka.twitt_reader.pojo_classes.new_status.NewStatusResult;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
 import com.dimka.twitt_reader.pojo_classes.verify_credentials.VerifyCredentials;
@@ -25,6 +26,9 @@ public interface TwitterRest {
     @GET("account/verify_credentials.json")
     Call<VerifyCredentials> getVerifyCredentials();
 
+    @GET("users/show.json")
+    Call<User> getUser(@Query("screen_name") String screenNAme);
+
     @POST("statuses/update.json")
     Call<NewStatusResult> sendNewStatus(@Query("status") String textStatus);
 
@@ -34,8 +38,11 @@ public interface TwitterRest {
     @GET("statuses/home_timeline.json")
     Call<List<CommonStatusClass>> getHomeTimeline(@Query("count") int count);
 
-    //POST
-    //https://api.twitter.com/1.1/account/update_profile.json
+    @POST("account/update_profile.json")
+    Call<User> updateProfile(@Query("name") String name,
+                               @Query("url") String url,
+                               @Query("location") String location,
+                               @Query("description") String description);
     // parameters: "name","url","location","description"
 
     //POST

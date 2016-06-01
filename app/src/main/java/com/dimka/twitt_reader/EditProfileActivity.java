@@ -1,7 +1,9 @@
 package com.dimka.twitt_reader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -49,7 +51,23 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void initControls(){
         photo = (ImageView)findViewById(R.id.image_logo);
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, 0);
+            }
+        });
         background = (ImageView)findViewById(R.id.image_background);
+        background.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, 1);
+            }
+        });
         editName = (EditText)findViewById(R.id.item_name);
         editPlace = (EditText)findViewById(R.id.item_place);
         editWebSite = (EditText)findViewById(R.id.item_web_site);
@@ -57,13 +75,33 @@ public class EditProfileActivity extends AppCompatActivity {
         fillProfileInfo();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(resultCode == RESULT_OK) {
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+            }
+            if (requestCode == 0) {
+                if (uri != null) {
+                    photo.setImageURI(uri);
+                }
+            } else if (requestCode == 1) {
+                if (uri != null) {
+                    background.setImageURI(uri);
+                }
+            }
+        }
+        super.onActivityResult(requestCode,resultCode,data);
+    }
+
     private void fillProfileInfo(){
-        editName.setText(Internet.verifyCredentials.getName());
-        editPlace.setText(Internet.verifyCredentials.getLocation());
-        editWebSite.setText(Internet.verifyCredentials.getEntities().getUrl().getUrls().get(0).getDisplayUrl());
-        editAvouMyself.setText(Internet.verifyCredentials.getDescription());
-        new ImageLoader(this,photo,background).execute(Internet.verifyCredentials.getProfileImageUrlHttps(),
-                Internet.verifyCredentials.getProfileBackgroundImageUrlHttps());
+        editName.setText(Internet.currentUser.getName());
+        editPlace.setText(Internet.currentUser.getLocation());
+        editWebSite.setText(Internet.currentUser.getEntities().getUrl().getUrls().get(0).getDisplayUrl());
+        editAvouMyself.setText(Internet.currentUser.getDescription());
+        new ImageLoader(this,photo,background).execute(Internet.currentUser.getProfileImageUrlHttps(),
+                Internet.currentUser.getProfileBackgroundImageUrlHttps());
     }
 
     public boolean onOptionsItemSelected(MenuItem item){

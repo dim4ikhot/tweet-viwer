@@ -8,7 +8,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import com.dimka.twitt_reader.pojo_classes.status.Medium;
-import com.dimka.twitt_reader.pojo_classes.status.Url;
 import com.dimka.twitt_reader.pojo_classes.status.UserMention;
 import com.dimka.twitt_reader.pojo_classes.timeline.user_timeline.Hashtag;
 import com.google.gson.annotations.Expose;

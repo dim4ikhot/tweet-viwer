@@ -22,12 +22,12 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.dimka.twitt_reader.list_adapters.TweetsViewAdapter;
 import com.dimka.twitt_reader.networking.MyOkHttpClient;
 import com.dimka.twitt_reader.networking.MyRetrofitBuilder;
 import com.dimka.twitt_reader.pojo_classes.account_settings.AccauntSettings;
+import com.dimka.twitt_reader.pojo_classes.current_user.User;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
 import com.dimka.twitt_reader.pojo_classes.verify_credentials.VerifyCredentials;
 import com.dimka.twitt_reader.rest_api_retrofit_interface.TwitterRest;
@@ -39,10 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
@@ -106,13 +104,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
+            String profileImage = "";
             Call<AccauntSettings> result = Internet.service.accauntSettings();
             Call<VerifyCredentials> verifyCredentialsCall = Internet.service.getVerifyCredentials();
             Call<List<CommonStatusClass>> callHomeStatuses = Internet.service.getHomeTimeline(5);
-            String profileImage = "";
             try {
+                Call<User> userCall = Internet.service.getUser(result.execute().body().getScreenName());
+                Internet.currentUser = userCall.execute().body();
                 Internet.verifyCredentials = verifyCredentialsCall.execute().body();
-                profileImage = Internet.verifyCredentials.getProfileImageUrlHttps();
+                profileImage = Internet.currentUser.getProfileImageUrlHttps();
                 homeStatuses = callHomeStatuses.execute().body();
             }catch(Exception e){
                 e.printStackTrace();
@@ -125,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            return Internet.verifyCredentials.getName();
+            return Internet.currentUser.getName();
         }
         @Override
         protected void onPostExecute(String result){
-            String title = Internet.verifyCredentials.getName().length() > 20?
-                    Internet.verifyCredentials.getName().substring(0,19) + "...":
-                    Internet.verifyCredentials.getName();
+            String title = Internet.currentUser.getName().length() > 20?
+                    Internet.currentUser.getName().substring(0,19) + "...":
+                    Internet.currentUser.getName();
             ((MainActivity)context).profile.setTitle(title);
             if(bmp != null) {
                 BitmapDrawable bmpDrawable = new BitmapDrawable(context.getResources(), bmp);
@@ -179,14 +179,11 @@ public class MainActivity extends AppCompatActivity {
 
                 accessToken = new AccessToken(accessToken_,accessSecret);
                 long userID = accessToken.getUserId();
-                User user;
                 try {
                     ConfigurationBuilder configBuilder = new ConfigurationBuilder();
                     configBuilder.setOAuthConsumerKey(consumerKey);
                     configBuilder.setOAuthConsumerSecret(consumerSecret);
                     twitter = new TwitterFactory(configBuilder.build()).getInstance(accessToken);
-                    user = twitter.showUser(userID);
-                    String name = user.getScreenName();
                 }catch(Exception e){
                     e.printStackTrace();
                 }
