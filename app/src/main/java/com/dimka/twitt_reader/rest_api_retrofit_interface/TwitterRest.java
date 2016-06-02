@@ -1,5 +1,7 @@
 package com.dimka.twitt_reader.rest_api_retrofit_interface;
 
+import android.provider.SyncStateContract;
+
 import com.dimka.twitt_reader.pojo_classes.account_settings.AccauntSettings;
 import com.dimka.twitt_reader.pojo_classes.current_user.PhotoUploadResult;
 import com.dimka.twitt_reader.pojo_classes.current_user.User;
@@ -17,6 +19,8 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -52,6 +56,8 @@ public interface TwitterRest {
                                @Query("description") String description);
     // parameters: "name","url","location","description"
 
+    
+    @Multipart
     @POST("account/update_profile_image.json")
     Call<Object> updateProfileImage(@Query("image") String base64Image);
     //https://api.twitter.com/1.1/account/update_profile_image.json
