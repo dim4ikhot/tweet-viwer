@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.dimka.twitt_reader.Internet;
+import com.dimka.twitt_reader.MainActivity;
 import com.dimka.twitt_reader.R;
 import com.dimka.twitt_reader.dialogs.InfoDialog;
 import com.dimka.twitt_reader.pojo_classes.new_status.NewStatusResult;
@@ -26,6 +27,7 @@ public class NewTweetActivity extends AppCompatActivity {
     EditText newTweet;
     MenuItem charsCount;
     ActionBar bar;
+    String userName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,21 @@ public class NewTweetActivity extends AppCompatActivity {
             bar.setHomeButtonEnabled(true);
         }
         TextChangedListener();
+        if(getIntent() != null) {
+            String screenName = getIntent().getStringExtra(MainActivity.SCREEN_NAME);
+            String quoteTweet = getIntent().getStringExtra(MainActivity.QUOTE_TEXT);
+            if(screenName != null && !screenName.equals("")) {
+                userName += "@" + screenName;
+            }
+            if(quoteTweet != null &&! quoteTweet.equals("")){
+                if(!userName.equals("")){
+                    userName = "\""+userName+ ": " + quoteTweet + "\"";
+                }
+                else {
+                    userName += "\"" + quoteTweet + "\"";
+                }
+            }
+        }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if ( fab != null) {
             fab.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +99,7 @@ public class NewTweetActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.new_tweet_menu, menu);
         charsCount = menu.findItem(R.id.chars_count);
+        newTweet.setText(userName);
         return true;
     }
 

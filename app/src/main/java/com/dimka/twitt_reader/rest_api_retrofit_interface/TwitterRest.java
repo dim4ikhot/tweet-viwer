@@ -12,6 +12,8 @@ import com.dimka.twitt_reader.pojo_classes.verify_credentials.VerifyCredentials;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.http.Body;
@@ -22,6 +24,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /*
@@ -59,9 +62,9 @@ public interface TwitterRest {
     
     @Multipart
     @POST("account/update_profile_image.json")
-    Call<Object> updateProfileImage(@Query("image") String base64Image);
-    //https://api.twitter.com/1.1/account/update_profile_image.json
-    //parameters: "image" in base64 encoded. max size 700 Kb.
+    Call<Object> updateProfileImage(@Part MultipartBody.Part file, @Query("image")String base64image);
+//    Call<Object> updateProfileImage(@Part("image") RequestBody description,
+//                                    @Part MultipartBody.Part file);
 
     //POST
     //https://api.twitter.com/1.1/account/update_profile_background_image.json

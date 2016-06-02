@@ -1,9 +1,9 @@
 package com.dimka.twitt_reader.list_adapters;
 
 import android.content.Context;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dimka.twitt_reader.R;
+import com.dimka.twitt_reader.dialogs.RetweetDialog;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
-import com.dimka.twitt_reader.pojo_classes.verify_credentials.Status;
+import com.dimka.twitt_reader.pojo_classes.status.Medium;
+import com.dimka.twitt_reader.pojo_classes.status.Url;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,6 +24,11 @@ import java.util.List;
  * Created by Dimka on 29.05.2016.
  */
 public class TweetsViewAdapter extends BaseAdapter {
+
+    public interface onAnswerClickListener{
+        void onAnsverClick(CommonStatusClass status);
+        void onRetweetClick(CommonStatusClass status);
+    }
 
     List<CommonStatusClass> statuses;
     Context context;
@@ -58,6 +65,7 @@ public class TweetsViewAdapter extends BaseAdapter {
         initControls(v);
         CommonStatusClass currentStatus = statuses.get(position);
         fillControls(currentStatus);
+        v.setTag(currentStatus);
         return v;
     }
 
@@ -79,10 +87,28 @@ public class TweetsViewAdapter extends BaseAdapter {
         txtFullName.setText(status.getUser().getName());
         String screenNAme = "@" + status.getUser().getScreenName();
         txtscreenName.setText(screenNAme);
+        //txtTweetText.setText(status.getText());
         txtTweetText.setText(status.getText());
-
         tweet_link.setVisibility(View.GONE);
         txtTweetUserLink.setVisibility(View.GONE);
+        for (Url url: status.getEntities().getUrls()){
+            if(status.getText().contains(url.getUrl())){
+                tweet_link.setVisibility(View.VISIBLE);
+                txtTweetText.setText(status.getText().replace(url.getUrl(),""));
+                tweet_link.setText(url.getDisplayUrl());
+                break;
+            }
+        }
+        imgOfTweet.setVisibility(View.GONE);
+        for (Medium medium: status.getEntities().getMedia()){
+            if(status.getText().contains(medium.getUrl())){
+                imgOfTweet.setVisibility(View.VISIBLE);
+                txtTweetText.setText(status.getText().replace(medium.getUrl(),""));
+                new ImageLoader(context, imgOfTweet).execute(medium.getMediaUrlHttps());
+                break;
+            }
+        }
+
         if(!status.getUser().getProfileImageUrlHttps().equals("")) {
             //load Image
             new ImageLoader(context, imgAvatar).execute(status.getUser().getProfileImageUrlHttps());
@@ -90,9 +116,24 @@ public class TweetsViewAdapter extends BaseAdapter {
         else{
             imgAvatar.setVisibility(View.GONE);
         }
-        imgOfTweet.setVisibility(View.GONE);
-        //imgRetweet
-        //imgLike
+        imgRetweet.setTag(status);
+        imgRetweet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommonStatusClass status = (CommonStatusClass)v.getTag();
+                ((onAnswerClickListener)context).onRetweetClick(status);
+            }
+        });
+        imgLike.setTag(status);
+
+        imgAnswer.setTag(status);
+        imgAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommonStatusClass status = (CommonStatusClass)v.getTag();
+                ((onAnswerClickListener)context).onAnsverClick(status);
+            }
+        });
         //imgAddFriend
     }
 

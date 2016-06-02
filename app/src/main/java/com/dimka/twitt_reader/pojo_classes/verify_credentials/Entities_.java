@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import com.dimka.twitt_reader.pojo_classes.status.Medium;
+import com.dimka.twitt_reader.pojo_classes.status.Url;
 import com.dimka.twitt_reader.pojo_classes.status.UserMention;
 import com.dimka.twitt_reader.pojo_classes.timeline.user_timeline.Hashtag;
 import com.google.gson.annotations.Expose;
@@ -31,7 +32,7 @@ public class Entities_ {
     @SerializedName("urls")//correct
     @Expose
     //private List<Url> urls = new ArrayList<Url>();
-    private List<Object> urls = new ArrayList<Object>();
+    private List<Url> urls = new ArrayList<>();
 
     @SerializedName("media")
     @Expose
@@ -96,7 +97,7 @@ public class Entities_ {
      * @return
      * The urls
      */
-    public List<Object> getUrls() {
+    public List<Url> getUrls() {
         return urls;
     }
 
@@ -105,7 +106,7 @@ public class Entities_ {
      * @param urls
      * The urls
      */
-    public void setUrls(List<Object> urls) {
+    public void setUrls(List<Url> urls) {
         this.urls = urls;
     }
 

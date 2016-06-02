@@ -28,6 +28,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -116,6 +120,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
                 userCall = Internet.service.updateProfile(params[0],params[1],params[2],params[3]);
                 Internet.currentUser = userCall.execute().body();
+                //updatePhotos(imgPhoto);
                /* photoUploadResultCall = Internet.service.updateProfileImage(imageToBase64String(imgPhoto));
                 result = photoUploadResultCall.execute().body();*/
             }catch(Exception e){
@@ -130,13 +135,65 @@ public class EditProfileActivity extends AppCompatActivity {
             finish();
         }
 
+        private void updatePhotos(File photoFile){
+            // create RequestBody instance from file
+            RequestBody requestFile =
+                    RequestBody.create(MediaType.parse("multipart/form-data"), photoFile);
+
+            // MultipartBody.Part is used to send also the actual file name
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("image", photoFile.getName(), requestFile);
+
+            // add another part within the multipart request
+            String descriptionString = "";
+            try{
+                descriptionString = imageToBase64String(photoFile);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            RequestBody description =
+                    RequestBody.create(
+                            MediaType.parse("multipart/form-data"), descriptionString);
+
+            // finally, execute the request
+            Call<Object> call = Internet.service.updateProfileImage(body, descriptionString);
+            call.enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call,
+                                       Response<Object> response) {
+                    Object o = response.body();
+                    if(o != null){
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+
         private String imageToBase64String(File f) throws Exception{
             long fileSize = f.length();
             byte[] imgInBytes = new byte[(int)fileSize];
             FileInputStream fis = new FileInputStream(f);
             fis.read(imgInBytes,0,(int)fileSize);
             fis.close();
-            return Base64.encodeToString(imgInBytes, Base64.URL_SAFE);
+            return Base64.encodeToString(imgInBytes, Base64.DEFAULT);
+        }
+
+        private byte[] imageToBase64byteArray(File f){
+            try {
+                long fileSize = f.length();
+                byte[] imgInBytes = new byte[(int) fileSize];
+                FileInputStream fis = new FileInputStream(f);
+                fis.read(imgInBytes, 0, (int) fileSize);
+                fis.close();
+                return Base64.encode(imgInBytes, Base64.DEFAULT);
+            }catch(Exception e){
+                return new byte[0];
+            }
         }
     }
 

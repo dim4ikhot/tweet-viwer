@@ -24,6 +24,7 @@ import android.webkit.WebViewClient;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.dimka.twitt_reader.dialogs.RetweetDialog;
 import com.dimka.twitt_reader.list_adapters.TweetsViewAdapter;
 import com.dimka.twitt_reader.networking.MyOkHttpClient;
 import com.dimka.twitt_reader.networking.MyRetrofitBuilder;
@@ -46,12 +47,16 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TweetsViewAdapter.onAnswerClickListener,
+        RetweetDialog.onButtonsClickListener {
+
 
     static String CALLBACK_URL = "x-oauthflow-twitter://twitterlogin";
     public static String ACCESS_TOKEN_KEY = "access_token_key";
     public static String ACCESS_SECRET_KEY = "access_token_secret";
     public static String IS_AUTHORIZED_KEY = "is_authorized";
+    public static final String SCREEN_NAME = "screen_name";
+    public static final String QUOTE_TEXT= "quote_tweet";
     public static int NEW_TWEET = 0;
     public static int VIEW_PROFILE = 1;
 
@@ -95,6 +100,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRetweetClick(CommonStatusClass status) {
+        RetweetDialog dlg = new RetweetDialog();
+        Internet.currentStatus = status;
+        dlg.show(getSupportFragmentManager(),"questiobDialog");
+    }
+
+    @Override
+    public void onAnsverClick(CommonStatusClass status) {
+        startActivityForResult(new Intent(this, NewTweetActivity.class).putExtra(SCREEN_NAME,
+                status.getUser().getScreenName()), NEW_TWEET);
+    }
+
+    @Override
+    public void onQuoteButtonClick() {
+        startActivityForResult(new Intent(this, NewTweetActivity.class).putExtra(QUOTE_TEXT,
+                Internet.currentStatus.getText()).putExtra(SCREEN_NAME,
+                Internet.currentStatus.getUser().getScreenName()), NEW_TWEET);
+    }
+
     public static class getAccauntInfo extends AsyncTask<Void,Void,String>{
 
         Context context;
@@ -110,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             String profileImage = "";
             Call<AccauntSettings> result = Internet.service.accauntSettings();
             Call<VerifyCredentials> verifyCredentialsCall = Internet.service.getVerifyCredentials();
-            Call<List<CommonStatusClass>> callHomeStatuses = Internet.service.getHomeTimeline(5);
+            Call<List<CommonStatusClass>> callHomeStatuses = Internet.service.getHomeTimeline(100);
             try {
                 Call<User> userCall = Internet.service.getUser(result.execute().body().getScreenName());
                 Internet.currentUser = userCall.execute().body();
