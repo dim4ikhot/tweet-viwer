@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.dimka.twitt_reader.list_adapters.TweetsViewAdapter;
 import com.dimka.twitt_reader.networking.MyOkHttpClient;
@@ -57,12 +58,13 @@ public class MainActivity extends AppCompatActivity {
     static String verifier;
     SharedPreferences preferences;
 
-    static Twitter twitter;
+    public static Twitter twitter;
     static RequestToken requestToken;
     static AccessToken accessToken;
     String consumerKey;
     String consumerSecret;
     AccauntSettings accauntSettings;
+    ProgressBar progressBar;
     ListView homeTimeline;
 
     MenuItem profile;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         homeTimeline = (ListView)(findViewById(R.id.all_tweets));
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         consumerKey = getResources().getString(R.string.consumer_key);
         consumerSecret = getResources().getString(R.string.consumer_secret);
@@ -137,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 BitmapDrawable bmpDrawable = new BitmapDrawable(context.getResources(), bmp);
                 ((MainActivity)context).profile.setIcon(bmpDrawable);
             }
+            ((MainActivity)context).progressBar.setVisibility(View.GONE);
+            ((MainActivity)context).homeTimeline.setVisibility(View.VISIBLE);
             if(homeStatuses != null){
                 TweetsViewAdapter adapter = new TweetsViewAdapter(context, homeStatuses);
                 ((MainActivity)context).homeTimeline.setAdapter(adapter);

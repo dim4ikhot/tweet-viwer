@@ -20,13 +20,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.dimka.twitt_reader.pojo_classes.current_user.PhotoUploadResult;
 import com.dimka.twitt_reader.pojo_classes.current_user.User;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -91,20 +95,29 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public class AplplyProfileChanges extends AsyncTask<String,Void,Void>{
         Call<User> userCall;
-        File imgPhoto;
+        Call<Object> photoUploadResultCall;
+        File imgPhoto, imgBackground;
+        Object result;
 
         @Override
         public void onPreExecute(){
             imgPhoto = (File)photo.getTag();
+            imgBackground = (File)background.getTag();
         }
 
         @Override
         protected Void doInBackground(String... params) {
             try{
+                if(imgPhoto != null) {
+                    MainActivity.twitter.updateProfileImage(imgPhoto);
+                }
+                if(imgBackground != null) {
+                    MainActivity.twitter.updateProfileBackgroundImage(imgBackground, true);
+                }
                 userCall = Internet.service.updateProfile(params[0],params[1],params[2],params[3]);
                 Internet.currentUser = userCall.execute().body();
-                userCall = Internet.service.updateProfileImage(imageToBase64String(imgPhoto));
-                Internet.currentUser = userCall.execute().body();
+               /* photoUploadResultCall = Internet.service.updateProfileImage(imageToBase64String(imgPhoto));
+                result = photoUploadResultCall.execute().body();*/
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -123,7 +136,7 @@ public class EditProfileActivity extends AppCompatActivity {
             FileInputStream fis = new FileInputStream(f);
             fis.read(imgInBytes,0,(int)fileSize);
             fis.close();
-            return Base64.encodeToString(imgInBytes, Base64.DEFAULT);
+            return Base64.encodeToString(imgInBytes, Base64.URL_SAFE);
         }
     }
 

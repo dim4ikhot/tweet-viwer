@@ -39,17 +39,21 @@ public class MyOkHttpClient {
                         .addQueryParameter("oauth_token", accessToken)
                         .addQueryParameter("oauth_version", "1.0");
 
-                String params = builder.toString() + paramsOfBaseUrl;
+                String params;
+                if((!baseUrl.contains("image"))) {
+                    params = builder.toString() + paramsOfBaseUrl;
+                }
+                else{
+                    params = builder.toString();
+                }
+
                 params = sortParamsInAlphabeticOrder(baseUrl, params.replace(baseUrl+"?", ""));
-                //params = params.replace(baseUrl+"?", "");
                 String signature = new SignatureGenerator()
                         .getSignature(method, baseUrl, consumerSecret,accessSecret, params);
                 builder.addQueryParameter("oauth_signature", signature);
 
                 HttpUrl url = builder.build();
-                String finalUrl = baseUrl+ "?" + sortParamsInAlphabeticOrder(baseUrl, url.toString() + paramsOfBaseUrl);
-                //String finalUrl = url.toString() + paramsOfBaseUrl;
-
+                String finalUrl = baseUrl + "?" + sortParamsInAlphabeticOrder(baseUrl, url.toString() + paramsOfBaseUrl);
 
                 // Request customization: add request headers
                 Request.Builder requestBuilder = original.newBuilder()

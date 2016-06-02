@@ -1,15 +1,22 @@
 package com.dimka.twitt_reader.rest_api_retrofit_interface;
 
 import com.dimka.twitt_reader.pojo_classes.account_settings.AccauntSettings;
+import com.dimka.twitt_reader.pojo_classes.current_user.PhotoUploadResult;
 import com.dimka.twitt_reader.pojo_classes.current_user.User;
 import com.dimka.twitt_reader.pojo_classes.new_status.NewStatusResult;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
 import com.dimka.twitt_reader.pojo_classes.verify_credentials.VerifyCredentials;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -46,7 +53,7 @@ public interface TwitterRest {
     // parameters: "name","url","location","description"
 
     @POST("account/update_profile_image.json")
-    Call<User> updateProfileImage(@Query("image") String base64String);
+    Call<Object> updateProfileImage(@Query("image") String base64Image);
     //https://api.twitter.com/1.1/account/update_profile_image.json
     //parameters: "image" in base64 encoded. max size 700 Kb.
 
