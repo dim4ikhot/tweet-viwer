@@ -40,7 +40,8 @@
     <!--RETWEET TITLES-->
     <string name="retweet_dialog_title">Retweet</string>
     <string name="retweet_dialog_message">Do you want to tell about this to your readers?</string>
-    <string name="retweet_dialog_quote">QUOTE</string>
-    <string name="retweet_dialog_cancel">CANCEL</string>
-    <string name="retweet_dialog_retweet">RETWEET</string>
+    <string name="retweet_dialog_quote">Quote</string>
+    <string name="retweet_dialog_cancel">Cancel</string>
+    <string name="retweet_dialog_retweet">Retweet</string>
+    <string name="retweet_dialog_unretweet">Unretweet</string>
 </resources>

@@ -25,6 +25,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /*
@@ -57,9 +58,22 @@ public interface TwitterRest {
                                @Query("url") String url,
                                @Query("location") String location,
                                @Query("description") String description);
-    // parameters: "name","url","location","description"
 
-    
+
+    @POST("statuses/retweet/{id}.json")
+    Call<CommonStatusClass> retweetStatus(@Path("id") long tweet);
+
+
+    @POST("statuses/unretweet/{id}.json")
+    Call<CommonStatusClass> unretweetStatus(@Path("id") long tweet);
+
+
+    @POST("favorites/create.json")
+    Call<CommonStatusClass> createFavorite(@Query("id") long id, @Query("include_entities") boolean includeEntities);
+
+    @POST("favorites/destroy.json")
+    Call<CommonStatusClass> destroyFavorite(@Query("id") long id, @Query("include_entities") boolean includeEntities);
+
     @Multipart
     @POST("account/update_profile_image.json")
     Call<Object> updateProfileImage(@Part MultipartBody.Part file, @Query("image")String base64image);

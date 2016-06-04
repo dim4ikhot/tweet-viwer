@@ -1,9 +1,10 @@
 package com.dimka.twitt_reader.list_adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dimka.twitt_reader.Internet;
 import com.dimka.twitt_reader.R;
-import com.dimka.twitt_reader.dialogs.RetweetDialog;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
 import com.dimka.twitt_reader.pojo_classes.status.Medium;
 import com.dimka.twitt_reader.pojo_classes.status.Url;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import retrofit2.Call;
 
 /*
  * Created by Dimka on 29.05.2016.
@@ -28,19 +31,28 @@ public class TweetsViewAdapter extends BaseAdapter {
     public interface onAnswerClickListener{
         void onAnsverClick(CommonStatusClass status);
         void onRetweetClick(CommonStatusClass status);
+        void onFavoriteClick();
+    }
+
+    public interface onTweetAvatarClickListener{
+        void onAvatarClick();
     }
 
     List<CommonStatusClass> statuses;
+    CommonStatusClass favoriteStatus;
     Context context;
     LayoutInflater inflater;
     View v;
+    boolean isProfileTweets;
 
     ImageView imgAvatar, imgOfTweet, imgAnswer, imgRetweet, imgLike, imgAddFriend;
-    TextView txtFullName,txtscreenName,txtTweetText, tweet_link, txtTweetUserLink;
+    TextView txtFullName,txtscreenName,txtTweetText, tweet_link, txtTweetUserLink,
+            retweetsCount, favoriteCount;
 
-    public TweetsViewAdapter(Context ctx, List<CommonStatusClass> statuses){
+    public TweetsViewAdapter(Context ctx, List<CommonStatusClass> statuses, boolean isItProfileTweets){
         this.statuses = statuses;
         context = ctx;
+        isProfileTweets = isItProfileTweets;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -81,6 +93,8 @@ public class TweetsViewAdapter extends BaseAdapter {
         imgRetweet = (ImageView)v.findViewById(R.id.img_retweet);
         imgLike = (ImageView)v.findViewById(R.id.img_like_tweet);
         imgAddFriend = (ImageView)v.findViewById(R.id.img_add_friend);
+        retweetsCount = (TextView)v.findViewById(R.id.retweets_count);
+        favoriteCount  = (TextView)v.findViewById(R.id.likes_count);
     }
 
     private void fillControls(CommonStatusClass status){
@@ -89,6 +103,21 @@ public class TweetsViewAdapter extends BaseAdapter {
         txtscreenName.setText(screenNAme);
         //txtTweetText.setText(status.getText());
         txtTweetText.setText(status.getText());
+        if(status.getRetweeted()){
+            imgRetweet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_repeat_blue_24dp));
+        }
+        else{
+            imgRetweet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_repeat_black_24dp));
+        }
+        if(status.getFavorited()) {
+            imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favorite_blue_24dp));
+        }
+        else{
+            imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favorite_border_black_24dp));
+        }
+
+        retweetsCount.setText(String.valueOf(status.getRetweetCount()));
+        favoriteCount.setText(String.valueOf(status.getFavoriteCount()));
         tweet_link.setVisibility(View.GONE);
         txtTweetUserLink.setVisibility(View.GONE);
         for (Url url: status.getEntities().getUrls()){
@@ -109,7 +138,17 @@ public class TweetsViewAdapter extends BaseAdapter {
             }
         }
 
+        imgAvatar.setTag(status);
         if(!status.getUser().getProfileImageUrlHttps().equals("")) {
+            if(!isProfileTweets) {
+                imgAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Internet.otherUser = ((CommonStatusClass) v.getTag()).getUser();
+                        ((onTweetAvatarClickListener) context).onAvatarClick();
+                    }
+                });
+            }
             //load Image
             new ImageLoader(context, imgAvatar).execute(status.getUser().getProfileImageUrlHttps());
         }
@@ -125,6 +164,14 @@ public class TweetsViewAdapter extends BaseAdapter {
             }
         });
         imgLike.setTag(status);
+        imgLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommonStatusClass status = (CommonStatusClass)v.getTag();
+                Internet.currentStatus = status;
+                new LikeUnlike(status.getId()).execute(status.getFavorited());
+            }
+        });
 
         imgAnswer.setTag(status);
         imgAnswer.setOnClickListener(new View.OnClickListener() {
@@ -165,4 +212,84 @@ public class TweetsViewAdapter extends BaseAdapter {
             }
         }
     }
+
+    private class LikeUnlike extends AsyncTask<Boolean, Void,Void>{
+
+        long id;
+
+        public LikeUnlike(long statusId){
+            id = statusId;
+        }
+        @Override
+        protected Void doInBackground(Boolean... params) {
+            boolean isAlreadyLiked = params[0];
+            Call<CommonStatusClass> status;
+            int retweetedCount = Internet.currentStatus.getFavoriteCount();
+            if(!isAlreadyLiked){
+                status = Internet.service.createFavorite(id,true);
+                Internet.currentStatus.setFavoriteCount(retweetedCount + 1);
+                Internet.currentStatus.setFavorited(true);
+            }else{
+                status = Internet.service.destroyFavorite(id,true);
+                Internet.currentStatus.setFavoriteCount(retweetedCount - 1);
+                Internet.currentStatus.setFavorited(false);
+            }
+
+            try{
+                favoriteStatus = status.execute().body();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void result){
+            if(favoriteStatus != null){
+                ((onAnswerClickListener)context).onFavoriteClick();
+            }
+        }
+    }
+
+
+    private class UserGetter extends AsyncTask<Boolean, Void,Void>{
+
+        long id;
+
+        public UserGetter(long statusId){
+            id = statusId;
+        }
+        @Override
+        protected Void doInBackground(Boolean... params) {
+            boolean isAlreadyLiked = params[0];
+            Call<CommonStatusClass> status;
+            int retweetedCount = Internet.currentStatus.getFavoriteCount();
+            if(!isAlreadyLiked){
+                status = Internet.service.createFavorite(id,true);
+                Internet.currentStatus.setFavoriteCount(retweetedCount + 1);
+                Internet.currentStatus.setFavorited(true);
+            }else{
+                status = Internet.service.destroyFavorite(id,true);
+                Internet.currentStatus.setFavoriteCount(retweetedCount - 1);
+                Internet.currentStatus.setFavorited(false);
+            }
+
+            try{
+                favoriteStatus = status.execute().body();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(Void result){
+            if(favoriteStatus != null){
+                ((onAnswerClickListener)context).onFavoriteClick();
+            }
+        }
+    }
+
 }

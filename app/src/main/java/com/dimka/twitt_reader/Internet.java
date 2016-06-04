@@ -16,5 +16,6 @@ public class Internet {
     public static TwitterRest service;
     public static VerifyCredentials verifyCredentials;
     public static User currentUser;
+    public static User otherUser;
     public static CommonStatusClass currentStatus;
 }

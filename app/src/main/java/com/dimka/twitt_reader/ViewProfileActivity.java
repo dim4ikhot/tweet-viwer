@@ -9,17 +9,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dimka.twitt_reader.dialogs.RetweetDialog;
 import com.dimka.twitt_reader.list_adapters.TweetsViewAdapter;
 import com.dimka.twitt_reader.pojo_classes.Error.Error;
 import com.dimka.twitt_reader.pojo_classes.Error.Errors;
+import com.dimka.twitt_reader.pojo_classes.current_user.User;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
 import com.dimka.twitt_reader.pojo_classes.timeline.user_timeline.UserTimeline;
+import com.dimka.twitt_reader.tweet.NewTweetActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -29,7 +36,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ViewProfileActivity extends AppCompatActivity {
+public class ViewProfileActivity extends AppCompatActivity implements TweetsViewAdapter.onAnswerClickListener,
+        RetweetDialog.onButtonsClickListener {
 
     public static final int PROFILE_EDIT = 0;
 
@@ -38,6 +46,10 @@ public class ViewProfileActivity extends AppCompatActivity {
     TextView readingCount, readersCount, fullName, screenName, aboutMySelf, place, site;
     ListView usersTweets;
     ActionBar bar;
+    User user;
+    boolean isShowMyself;
+    TweetsViewAdapter adapter;
+    ScrollView scrollTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +60,55 @@ public class ViewProfileActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setHomeButtonEnabled(true);
         }
+        isShowMyself = getIntent().getBooleanExtra("isDhowMySelf", true);
+        if(isShowMyself){
+            if(Internet.currentUser != null) {
+                user = Internet.currentUser;
+            }
+        }else{
+            if(Internet.otherUser != null) {
+                user = Internet.otherUser;
+            }
+        }
         initControls();
+    }
+
+    @Override
+    public void onAnsverClick(CommonStatusClass status) {
+        startActivityForResult(new Intent(this, NewTweetActivity.class).putExtra(MainActivity.SCREEN_NAME,
+                status.getUser().getScreenName()), MainActivity.NEW_TWEET);
+    }
+
+    @Override
+    public void onRetweetClick(CommonStatusClass status) {
+        RetweetDialog dlg = new RetweetDialog();
+        Internet.currentStatus = status;
+        dlg.show(getSupportFragmentManager(),"questiobDialog");
+    }
+
+    @Override
+    public void onFavoriteClick() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onQuoteButtonClick() {
+        startActivityForResult(new Intent(this, NewTweetActivity.class).putExtra(MainActivity.QUOTE_TEXT,
+                Internet.currentStatus.getText()).putExtra(MainActivity.SCREEN_NAME,
+                Internet.currentStatus.getUser().getScreenName()), MainActivity.NEW_TWEET);
+    }
+
+    @Override
+    public void onRetweetButtonClick() {
+        boolean isRetweeted = !Internet.currentStatus.getRetweeted();
+        int retweetCount = Internet.currentStatus.getRetweetCount();
+        if (isRetweeted) {
+            Internet.currentStatus.setRetweetCount(retweetCount + 1);
+        } else {
+            Internet.currentStatus.setRetweetCount(retweetCount - 1);
+        }
+        Internet.currentStatus.setRetweeted(isRetweeted);
+        new RetweetUnRetweeAsync(!isRetweeted,adapter).execute(Internet.currentStatus.getId());
     }
 
     private void initControls(){
@@ -60,9 +120,14 @@ public class ViewProfileActivity extends AppCompatActivity {
         fullName = (TextView)findViewById(R.id.profile_full_name);
         screenName = (TextView)findViewById(R.id.profile_screen_name);
         usersTweets = (ListView)findViewById(R.id.usersTweets);
+      //  scrollTest = (ScrollView)findViewById(R.id.scrolltest);
+       // setListViewHeightBasedOnChildren(usersTweets,scrollTest);
         aboutMySelf = (TextView)findViewById(R.id.profile_about_myself);
         place = (TextView)findViewById(R.id.profile_place);
         site = (TextView)findViewById(R.id.profile_site);
+        if(!isShowMyself){
+            editProfile.setVisibility(View.GONE);
+        }
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,12 +152,12 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if(Internet.currentUser != null){
-                String backgroundURL = Internet.currentUser.getProfileBackgroundImageUrlHttps();
-                String profileImage = Internet.currentUser.getProfileImageUrlHttps();
+            if(user != null){
+                String backgroundURL = user.getProfileBackgroundImageUrlHttps();
+                String profileImage = user.getProfileImageUrlHttps();
                 Call<List<CommonStatusClass>> callStatuses =
                         Internet.service.getStatuses(
-                                Internet.currentUser.getScreenName(),2);
+                                user.getScreenName(),100);
                 try {
                     statuses = callStatuses.execute().body();
                     bmpBackground = Picasso.with(context).load(backgroundURL).get();
@@ -112,30 +177,30 @@ public class ViewProfileActivity extends AppCompatActivity {
             if(bmpProfileIcon != null) {
                 profileImage.setImageBitmap(bmpProfileIcon);
             }
-            String reading = "" + Internet.currentUser.getFriendsCount();
+            String reading = "" + user.getFriendsCount();
             readingCount.setText(reading);
-            String readers = "" + Internet.currentUser.getFollowersCount();
+            String readers = "" + user.getFollowersCount();
             readersCount.setText(readers);
-            fullName.setText(Internet.currentUser.getName());
-            String screenNameText = "@"+Internet.currentUser.getScreenName();
+            fullName.setText(user.getName());
+            String screenNameText = "@"+user.getScreenName();
             screenName.setText(screenNameText);
 
-            if(!Internet.currentUser.getDescription().equals("")) {
-                aboutMySelf.setText(Internet.currentUser.getDescription());
+            if(!user.getDescription().equals("")) {
+                aboutMySelf.setText(user.getDescription());
                 aboutMySelf.setVisibility(View.VISIBLE);
             }
             else{
                 aboutMySelf.setVisibility(View.GONE);
             }
-            if(!Internet.currentUser.getLocation().equals("")) {
-                place.setText(Internet.currentUser.getLocation());
+            if(!user.getLocation().equals("")) {
+                place.setText(user.getLocation());
                 place.setVisibility(View.VISIBLE);
             }
             else{
                 place.setVisibility(View.GONE);
             }
-            if(Internet.currentUser.getEntities().getUrl() != null) {
-                site.setText(Internet.currentUser.getEntities().getUrl().getUrls().get(0).getDisplayUrl());
+            if(user.getEntities().getUrl() != null) {
+                site.setText(user.getEntities().getUrl().getUrls().get(0).getDisplayUrl());
                 site.setVisibility(View.VISIBLE);
             }
             else{
@@ -143,7 +208,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
 
             if(statuses != null){
-                TweetsViewAdapter adapter = new TweetsViewAdapter(context, statuses);
+                adapter = new TweetsViewAdapter(context, statuses, true);
                 usersTweets.setAdapter(adapter);
             }
         }
@@ -158,6 +223,28 @@ public class ViewProfileActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView, ScrollView parent) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        parent.setLayoutParams(params);
     }
 
     @Override

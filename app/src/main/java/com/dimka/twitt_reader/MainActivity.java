@@ -48,13 +48,15 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class MainActivity extends AppCompatActivity implements TweetsViewAdapter.onAnswerClickListener,
-        RetweetDialog.onButtonsClickListener {
-
+        RetweetDialog.onButtonsClickListener, TweetsViewAdapter.onTweetAvatarClickListener {
 
     static String CALLBACK_URL = "x-oauthflow-twitter://twitterlogin";
     public static String ACCESS_TOKEN_KEY = "access_token_key";
     public static String ACCESS_SECRET_KEY = "access_token_secret";
+
+
     public static String IS_AUTHORIZED_KEY = "is_authorized";
+
     public static final String SCREEN_NAME = "screen_name";
     public static final String QUOTE_TEXT= "quote_tweet";
     public static int NEW_TWEET = 0;
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     AccauntSettings accauntSettings;
     ProgressBar progressBar;
     ListView homeTimeline;
+    TweetsViewAdapter adapter;
+    List<CommonStatusClass> homeStatuses = new ArrayList<>();
 
     MenuItem profile;
 
@@ -101,10 +105,33 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     }
 
     @Override
+    public void onAvatarClick() {
+        startActivityForResult(new Intent(this, ViewProfileActivity.class).putExtra("isDhowMySelf",false), VIEW_PROFILE);
+    }
+
+    @Override
     public void onRetweetClick(CommonStatusClass status) {
         RetweetDialog dlg = new RetweetDialog();
         Internet.currentStatus = status;
         dlg.show(getSupportFragmentManager(),"questiobDialog");
+    }
+
+    @Override
+    public void onFavoriteClick() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRetweetButtonClick() {
+        boolean isRetweeted = !Internet.currentStatus.getRetweeted();
+        int retweetCount = Internet.currentStatus.getRetweetCount();
+        if (isRetweeted) {
+            Internet.currentStatus.setRetweetCount(retweetCount + 1);
+        } else {
+            Internet.currentStatus.setRetweetCount(retweetCount - 1);
+        }
+        Internet.currentStatus.setRetweeted(isRetweeted);
+        new RetweetUnRetweeAsync(!isRetweeted,adapter).execute(Internet.currentStatus.getId());
     }
 
     @Override
@@ -124,10 +151,11 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
 
         Context context;
         Bitmap bmp = null;
-        List<CommonStatusClass> homeStatuses = new ArrayList<>();
+        MainActivity activeActivity;
 
         public getAccauntInfo(Context ctx){
             context = ctx;
+            activeActivity = (MainActivity)context;
         }
 
         @Override
@@ -141,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                 Internet.currentUser = userCall.execute().body();
                 Internet.verifyCredentials = verifyCredentialsCall.execute().body();
                 profileImage = Internet.currentUser.getProfileImageUrlHttps();
-                homeStatuses = callHomeStatuses.execute().body();
+                activeActivity.homeStatuses = callHomeStatuses.execute().body();
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -160,16 +188,16 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
             String title = Internet.currentUser.getName().length() > 20?
                     Internet.currentUser.getName().substring(0,19) + "...":
                     Internet.currentUser.getName();
-            ((MainActivity)context).profile.setTitle(title);
+            activeActivity.profile.setTitle(title);
             if(bmp != null) {
                 BitmapDrawable bmpDrawable = new BitmapDrawable(context.getResources(), bmp);
-                ((MainActivity)context).profile.setIcon(bmpDrawable);
+                activeActivity.profile.setIcon(bmpDrawable);
             }
-            ((MainActivity)context).progressBar.setVisibility(View.GONE);
-            ((MainActivity)context).homeTimeline.setVisibility(View.VISIBLE);
-            if(homeStatuses != null){
-                TweetsViewAdapter adapter = new TweetsViewAdapter(context, homeStatuses);
-                ((MainActivity)context).homeTimeline.setAdapter(adapter);
+            activeActivity.progressBar.setVisibility(View.GONE);
+            activeActivity.homeTimeline.setVisibility(View.VISIBLE);
+            if(activeActivity.homeStatuses != null){
+                activeActivity.adapter = new TweetsViewAdapter(context, activeActivity.homeStatuses,false);
+                activeActivity.homeTimeline.setAdapter(((MainActivity)context).adapter);
             }
         }
     }
@@ -296,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                 startActivityForResult(new Intent(this, NewTweetActivity.class), NEW_TWEET);
                 break;
             case R.id.action_profile_view:
-                startActivityForResult(new Intent(this, ViewProfileActivity.class), VIEW_PROFILE);
+                startActivityForResult(new Intent(this, ViewProfileActivity.class).putExtra("isDhowMySelf",true), VIEW_PROFILE);
                 break;
         }
 
@@ -382,5 +410,9 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     @Override
     public void onActivityResult(int requestCode, int resultCode,Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+        progressBar.setVisibility(View.VISIBLE);
+        homeTimeline.setVisibility(View.GONE);
+        new getAccauntInfo(this).execute((Void) null);
+
     }
 }

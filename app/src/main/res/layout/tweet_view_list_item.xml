@@ -104,26 +104,66 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/img_answer_tweet"
-                android:src="@drawable/ic_reply_black_24dp"/>
+                android:orientation="horizontal"
+                android:gravity="center">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/img_retweet"
-                android:src="@drawable/ic_repeat_black_24dp"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/img_answer_tweet"
+                    android:src="@drawable/ic_reply_black_24dp"/>
 
-            <ImageView
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/img_like_tweet"
-                android:src="@drawable/ic_favorite_border_black_24dp"/>
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/img_retweet"
+                    android:src="@drawable/ic_repeat_black_24dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:id="@+id/retweets_count"
+                    android:text="000"
+                    android:textColor="@android:color/darker_gray"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/img_like_tweet"
+                    android:src="@drawable/ic_favorite_border_black_24dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:id="@+id/likes_count"
+                    android:text="000"
+                    android:textColor="@android:color/darker_gray"/>
+
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="wrap_content"
