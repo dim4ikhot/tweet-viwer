@@ -3,6 +3,7 @@ package com.dimka.twitt_reader.list_adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -102,7 +103,6 @@ public class TweetsViewAdapter extends BaseAdapter {
         String screenNAme = "@" + status.getUser().getScreenName();
         txtscreenName.setText(screenNAme);
         //txtTweetText.setText(status.getText());
-        txtTweetText.setText(status.getText());
         if(status.getRetweeted()){
             imgRetweet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_repeat_blue_24dp));
         }
@@ -120,22 +120,52 @@ public class TweetsViewAdapter extends BaseAdapter {
         favoriteCount.setText(String.valueOf(status.getFavoriteCount()));
         tweet_link.setVisibility(View.GONE);
         txtTweetUserLink.setVisibility(View.GONE);
+        txtTweetUserLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = ((TextView)v).getText().toString();
+                context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)));
+            }
+        });
+
         for (Url url: status.getEntities().getUrls()){
             if(status.getText().contains(url.getUrl())){
                 tweet_link.setVisibility(View.VISIBLE);
-                txtTweetText.setText(status.getText().replace(url.getUrl(),""));
                 tweet_link.setText(url.getDisplayUrl());
                 break;
             }
         }
+
         imgOfTweet.setVisibility(View.GONE);
-        for (Medium medium: status.getEntities().getMedia()){
-            if(status.getText().contains(medium.getUrl())){
-                imgOfTweet.setVisibility(View.VISIBLE);
-                txtTweetText.setText(status.getText().replace(medium.getUrl(),""));
-                new ImageLoader(context, imgOfTweet).execute(medium.getMediaUrlHttps());
-                break;
+        String tweetText = "";
+        String linkText = "";
+        String userLink;
+        String statusText = status.getText();
+        if(status.getEntities().getMedia().size() != 0) {
+            for (Medium url : status.getEntities().getMedia()) {
+                if (!statusText.equals("")) {
+                    if(statusText.contains("#")) {
+                        tweetText = statusText.substring(0, statusText.indexOf("#"));
+                        linkText = statusText.substring(statusText.indexOf("#"));
+                        userLink = linkText.substring(0, linkText.indexOf("http"));
+                        if (linkText.contains(url.getUrl())) {
+                            txtTweetText.setText(tweetText);
+                            imgOfTweet.setVisibility(View.VISIBLE);
+                            txtTweetUserLink.setText(userLink);
+                            txtTweetUserLink.setVisibility(View.VISIBLE);
+                            new ImageLoader(context, imgOfTweet).execute(url.getMediaUrlHttps());
+                            break;
+                        }
+                    }
+                    else{
+                        tweetText = status.getText();
+                        txtTweetText.setText(tweetText);
+                    }
+                }
             }
+        }
+        else{
+            txtTweetText.setText(statusText);
         }
 
         imgAvatar.setTag(status);

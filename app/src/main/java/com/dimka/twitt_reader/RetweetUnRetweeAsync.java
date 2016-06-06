@@ -51,6 +51,8 @@ public class RetweetUnRetweeAsync extends AsyncTask<Long,Void,Void> {
 
     @Override
     public void onPostExecute(Void result){
-        adapter.notifyDataSetChanged();
+        if(adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 }

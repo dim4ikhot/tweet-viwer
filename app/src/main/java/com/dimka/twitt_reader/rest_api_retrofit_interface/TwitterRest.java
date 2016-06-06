@@ -74,13 +74,12 @@ public interface TwitterRest {
     @POST("favorites/destroy.json")
     Call<CommonStatusClass> destroyFavorite(@Query("id") long id, @Query("include_entities") boolean includeEntities);
 
+    @POST("statuses/destroy/{id}.json")
+    Call<CommonStatusClass> destroyStatus(@Path("id") long statusId);
+
+
     @Multipart
     @POST("account/update_profile_image.json")
     Call<Object> updateProfileImage(@Part MultipartBody.Part file, @Query("image")String base64image);
-//    Call<Object> updateProfileImage(@Part("image") RequestBody description,
-//                                    @Part MultipartBody.Part file);
 
-    //POST
-    //https://api.twitter.com/1.1/account/update_profile_background_image.json
-    //parameters: "image"
 }

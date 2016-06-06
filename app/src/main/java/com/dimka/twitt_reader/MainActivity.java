@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     static AccessToken accessToken;
     String consumerKey;
     String consumerSecret;
-    AccauntSettings accauntSettings;
     ProgressBar progressBar;
     ListView homeTimeline;
     TweetsViewAdapter adapter;
@@ -85,6 +85,16 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         homeTimeline = (ListView)(findViewById(R.id.all_tweets));
+        homeTimeline.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CommonStatusClass status = (CommonStatusClass) view.getTag();
+                if(status != null) {
+                    Internet.currentStatus = status;
+                    startActivityForResult(new Intent(MainActivity.this, ReviewCurrentTweet.class), 555);
+                }
+            }
+        });
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         consumerKey = getResources().getString(R.string.consumer_key);

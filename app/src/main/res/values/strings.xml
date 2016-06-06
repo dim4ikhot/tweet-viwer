@@ -44,4 +44,6 @@
     <string name="retweet_dialog_cancel">Cancel</string>
     <string name="retweet_dialog_retweet">Retweet</string>
     <string name="retweet_dialog_unretweet">Unretweet</string>
+    <string name="retweets_title">Retweets</string>
+    <string name="favorites_title">Favorites</string>
 </resources>

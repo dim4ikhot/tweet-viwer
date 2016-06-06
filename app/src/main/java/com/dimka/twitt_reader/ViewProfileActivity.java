@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +41,7 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
         RetweetDialog.onButtonsClickListener {
 
     public static final int PROFILE_EDIT = 0;
+    public static final int VIEW_STATUS = 1;
 
     ImageView headerImage, profileImage;
     Button editProfile;
@@ -120,6 +122,16 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
         fullName = (TextView)findViewById(R.id.profile_full_name);
         screenName = (TextView)findViewById(R.id.profile_screen_name);
         usersTweets = (ListView)findViewById(R.id.usersTweets);
+        usersTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CommonStatusClass status = (CommonStatusClass) view.getTag();
+                if(status != null) {
+                    Internet.currentStatus = status;
+                    startActivityForResult(new Intent(ViewProfileActivity.this, ReviewCurrentTweet.class), VIEW_STATUS);
+                }
+            }
+        });
       //  scrollTest = (ScrollView)findViewById(R.id.scrolltest);
        // setListViewHeightBasedOnChildren(usersTweets,scrollTest);
         aboutMySelf = (TextView)findViewById(R.id.profile_about_myself);
@@ -250,7 +262,7 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
     @Override
     public void onActivityResult(int requestCode, int resultCode,Intent data){
         //change name, images
-        if(requestCode == PROFILE_EDIT) {
+        if(requestCode == PROFILE_EDIT || requestCode == VIEW_STATUS) {
             fillsControl();
         }
         super.onActivityResult(requestCode,resultCode,data);

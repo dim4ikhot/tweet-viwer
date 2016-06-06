@@ -123,7 +123,8 @@ public class NewTweetActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            Call<NewStatusResult> result =  Internet.service.sendNewStatus(params[0]);
+            String text = params[0];
+            Call<NewStatusResult> result =  Internet.service.sendNewStatus(text);
             NewStatusResult statusResult = null;
             try {
                 statusResult = result.execute().body();
@@ -141,6 +142,7 @@ public class NewTweetActivity extends AppCompatActivity {
             else{
                 InfoDialog dlg = new InfoDialog();
                 dlg.setTitle("Ooops. Something wrong...");
+                dlg.show(NewTweetActivity.this.getSupportFragmentManager(), "error_dialog");
             }
 
         }
