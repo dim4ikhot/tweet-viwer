@@ -3,7 +3,9 @@ package com.dimka.twitt_reader;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -45,6 +48,7 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
 
     ImageView headerImage, profileImage;
     Button editProfile;
+    ImageButton addNewUser;
     TextView readingCount, readersCount, fullName, screenName, aboutMySelf, place, site;
     ListView usersTweets;
     ActionBar bar;
@@ -62,14 +66,23 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setHomeButtonEnabled(true);
         }
-        isShowMyself = getIntent().getBooleanExtra("isDhowMySelf", true);
+        addNewUser = (ImageButton)findViewById(R.id.button_add_user);
+        addNewUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new CreateDestroyFriendship().execute(user.getFollowing());
+            }
+        });
+        isShowMyself = getIntent().getBooleanExtra("isShowMySelf", true);
         if(isShowMyself){
             if(Internet.currentUser != null) {
                 user = Internet.currentUser;
+                addNewUser.setVisibility(View.GONE);
             }
         }else{
             if(Internet.otherUser != null) {
                 user = Internet.otherUser;
+                addNewUser.setVisibility(View.VISIBLE);
             }
         }
         initControls();
@@ -189,6 +202,15 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
             if(bmpProfileIcon != null) {
                 profileImage.setImageBitmap(bmpProfileIcon);
             }
+            if(user.getFollowing()){
+                addNewUser.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
+                addNewUser.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_person_ok_black_24dp));
+            }
+            else{
+                addNewUser.setBackgroundColor(Color.WHITE);
+                addNewUser.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_person_add_black_24dp));
+            }
+
             String reading = "" + user.getFriendsCount();
             readingCount.setText(reading);
             String readers = "" + user.getFollowersCount();
@@ -235,6 +257,26 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class CreateDestroyFriendship extends AsyncTask<Boolean,Void,Void>{
+        @Override
+        protected Void doInBackground(Boolean... params) {
+            Call<User> fiendshipCall;
+            if(!params[0]){
+                fiendshipCall = Internet.service.createFriendship(user.getId());
+            }
+            else{
+                fiendshipCall = Internet.service.destroyFriendship(user.getId());
+            }
+            try {
+                fiendshipCall.execute().body();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView, ScrollView parent) {

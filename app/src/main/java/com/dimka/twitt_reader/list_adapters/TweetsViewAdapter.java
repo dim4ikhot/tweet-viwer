@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dimka.twitt_reader.ImageLoader;
 import com.dimka.twitt_reader.Internet;
 import com.dimka.twitt_reader.R;
 import com.dimka.twitt_reader.pojo_classes.status.CommonStatusClass;
@@ -212,35 +213,6 @@ public class TweetsViewAdapter extends BaseAdapter {
             }
         });
         //imgAddFriend
-    }
-
-    public class ImageLoader extends AsyncTask<String,Void,Void>{
-
-        Context context;
-        Bitmap bmp;
-        ImageView headerImage;
-
-        public ImageLoader(Context ctx, ImageView headerImg){
-            context = ctx;
-            headerImage = headerImg;
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            String profileImage = params[0];
-            try {
-                bmp = Picasso.with(context).load(profileImage).get();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        public void onPostExecute(Void result){
-            if(bmp != null) {
-                headerImage.setImageBitmap(bmp);
-            }
-        }
     }
 
     private class LikeUnlike extends AsyncTask<Boolean, Void,Void>{

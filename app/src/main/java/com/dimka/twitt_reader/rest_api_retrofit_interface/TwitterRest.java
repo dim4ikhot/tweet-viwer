@@ -77,6 +77,16 @@ public interface TwitterRest {
     @POST("statuses/destroy/{id}.json")
     Call<CommonStatusClass> destroyStatus(@Path("id") long statusId);
 
+    @GET("users/search.json")
+    Call<List<User>> searchUsers(@Query("q") String request);
+
+    @POST("friendships/create.json")
+    Call<User> createFriendship(@Query("user_id") long userId);
+
+    @POST("friendships/destroy.json")
+    Call<User> destroyFriendship(@Query("user_id") long userId);
+
+
 
     @Multipart
     @POST("account/update_profile_image.json")

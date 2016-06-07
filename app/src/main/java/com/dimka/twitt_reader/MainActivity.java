@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     public static final String QUOTE_TEXT= "quote_tweet";
     public static int NEW_TWEET = 0;
     public static int VIEW_PROFILE = 1;
+    public static int SEARCH_USERS = 2;
 
     static String verifier;
     SharedPreferences preferences;
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
 
     @Override
     public void onAvatarClick() {
-        startActivityForResult(new Intent(this, ViewProfileActivity.class).putExtra("isDhowMySelf",false), VIEW_PROFILE);
+        startActivityForResult(new Intent(this, ViewProfileActivity.class).putExtra("isShowMySelf",false), VIEW_PROFILE);
     }
 
     @Override
@@ -335,6 +336,9 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                 break;
             case R.id.action_profile_view:
                 startActivityForResult(new Intent(this, ViewProfileActivity.class).putExtra("isDhowMySelf",true), VIEW_PROFILE);
+                break;
+            case R.id.action_search:
+                startActivityForResult(new Intent(this, SearchActivity.class), SEARCH_USERS);
                 break;
         }
 

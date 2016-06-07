@@ -19,6 +19,7 @@
 
     <string name="tweets_list_title">Tweets</string>
     <string name="button_edit_profile_title">Edit profile</string>
+    <string name="button_add_user_title">Add user</string>
     <string name="reading_text_title">reading</string>
     <string name="readers_text_title">readers</string>
 
@@ -35,6 +36,7 @@
     <string name="hint_edit_profile_about_myself">About myself</string>
     <string name="hint_edit_profile_image_caption">Photo</string>
     <string name="hint_edit_profile_background_caption">Background</string>
+    <string name="hint_edit_search">Search</string>
 
 
     <!--RETWEET TITLES-->

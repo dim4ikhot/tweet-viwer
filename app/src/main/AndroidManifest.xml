@@ -43,7 +43,8 @@
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ReviewCurrentTweet"></activity>
+        <activity android:name=".ReviewCurrentTweet" />
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>
