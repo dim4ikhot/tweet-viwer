@@ -4,6 +4,13 @@
     tools:context="com.dimka.twitt_reader.MainActivity">
 
     <item
+        android:id="@+id/action_refresh_tweets_list"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_autorenew_white_24dp"
+        android:title="@string/action_refresh_tweet"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/action_send_new_tweet"
         android:orderInCategory="1"
         android:icon="@drawable/ic_mail_outline_white_24dp"
@@ -20,7 +27,7 @@
     <item
         android:id="@+id/action_profile_view"
         android:orderInCategory="3"
-        android:title=""
+        android:title="@string/action_authorized_user"
         app:showAsAction="never" />
 
     <item

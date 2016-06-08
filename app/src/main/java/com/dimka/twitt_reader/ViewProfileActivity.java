@@ -244,6 +244,10 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
             if(statuses != null){
                 adapter = new TweetsViewAdapter(context, statuses, true);
                 usersTweets.setAdapter(adapter);
+                int to = MainActivity.getTweetPosition(context, statuses);
+                if(to != -1){
+                    usersTweets.setSelection(to);
+                }
             }
         }
     }

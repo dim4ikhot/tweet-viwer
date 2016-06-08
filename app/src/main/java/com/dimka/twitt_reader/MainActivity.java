@@ -24,9 +24,12 @@ import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.dimka.twitt_reader.dialogs.InfoDialog;
 import com.dimka.twitt_reader.dialogs.RetweetDialog;
 import com.dimka.twitt_reader.list_adapters.TweetsViewAdapter;
+import com.dimka.twitt_reader.networking.InternetConnectionChecker;
 import com.dimka.twitt_reader.networking.MyOkHttpClient;
 import com.dimka.twitt_reader.networking.MyRetrofitBuilder;
 import com.dimka.twitt_reader.pojo_classes.account_settings.AccauntSettings;
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     public static int NEW_TWEET = 0;
     public static int VIEW_PROFILE = 1;
     public static int SEARCH_USERS = 2;
+    public static int REVIEW_TWEET = 3;
+    public static String LAST_VISIBLE = "last_visible";
+
 
     static String verifier;
     SharedPreferences preferences;
@@ -70,11 +76,15 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     public static Twitter twitter;
     static RequestToken requestToken;
     static AccessToken accessToken;
+
+    SharedPreferences pref;
     String consumerKey;
     String consumerSecret;
+    TextView noConnection;
     ProgressBar progressBar;
     ListView homeTimeline;
     TweetsViewAdapter adapter;
+    boolean authorized = false;
     List<CommonStatusClass> homeStatuses = new ArrayList<>();
 
     MenuItem profile;
@@ -92,7 +102,8 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                 CommonStatusClass status = (CommonStatusClass) view.getTag();
                 if(status != null) {
                     Internet.currentStatus = status;
-                    startActivityForResult(new Intent(MainActivity.this, ReviewCurrentTweet.class), 555);
+                    startActivityForResult(new Intent(MainActivity.this,
+                            ReviewCurrentTweet.class), REVIEW_TWEET);
                 }
             }
         });
@@ -100,8 +111,28 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         consumerKey = getResources().getString(R.string.consumer_key);
         consumerSecret = getResources().getString(R.string.consumer_secret);
+        noConnection = (TextView)findViewById(R.id.txtNoInternetConnection);
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        noConnection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                noConnection.setVisibility(View.GONE);
+                homeTimeline.setVisibility(View.GONE);
+                getAccessToken();
+            }
+        });
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        getAccessToken();
+
+        if(new InternetConnectionChecker(this).isConnected()) {
+            noConnection.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            getAccessToken();
+        }
+        else{
+            noConnection.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
 
         //This button serves for test any requests
         if(fab != null) {
@@ -113,6 +144,15 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroy(){
+        SharedPreferences.Editor edit = pref.edit();
+        int last = homeTimeline.getFirstVisiblePosition();
+        edit.putInt(LAST_VISIBLE, last);
+        edit.apply();
+        super.onDestroy();
     }
 
     @Override
@@ -200,17 +240,42 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                     Internet.currentUser.getName().substring(0,19) + "...":
                     Internet.currentUser.getName();
             activeActivity.profile.setTitle(title);
+            activeActivity.authorized = true;
             if(bmp != null) {
                 BitmapDrawable bmpDrawable = new BitmapDrawable(context.getResources(), bmp);
                 activeActivity.profile.setIcon(bmpDrawable);
             }
             activeActivity.progressBar.setVisibility(View.GONE);
+            activeActivity.noConnection.setVisibility(View.GONE);
             activeActivity.homeTimeline.setVisibility(View.VISIBLE);
             if(activeActivity.homeStatuses != null){
                 activeActivity.adapter = new TweetsViewAdapter(context, activeActivity.homeStatuses,false);
                 activeActivity.homeTimeline.setAdapter(((MainActivity)context).adapter);
+                int to = getTweetPosition(activeActivity, activeActivity.homeStatuses);
+                if(to != -1){
+                    activeActivity.homeTimeline.setSelection(to);
+                }
+                Internet.currentStatus = null;
             }
         }
+    }
+
+    public static int getTweetPosition(Context ctx, List<CommonStatusClass> tweets){
+        if(Internet.currentStatus != null) {
+            for (CommonStatusClass status : tweets) {
+                if (status.getId() == Internet.currentStatus.getId()) {
+                    return tweets.indexOf(status);
+                }
+            }
+        }
+        else{
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+            int visible = pref.getInt(MainActivity.LAST_VISIBLE, -1);
+            if(visible != -1){
+                return visible;
+            }
+        }
+        return -1;
     }
 
     private void getAccessToken(){
@@ -312,6 +377,12 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        InfoDialog dialogInfo = new InfoDialog();
+        String title = getResources().getString(R.string.not_authorized_title);
+        dialogInfo.setTitle(title);
+        String message = getResources().getString(R.string.not_authorized_message);
+        dialogInfo.setMessage(message);
+
         switch(id) {
             case R.id.action_settings:
                 return true;
@@ -332,13 +403,41 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                 setKeysAfterSuccessAuthorised("","",false);
                 break;
             case R.id.action_send_new_tweet:
-                startActivityForResult(new Intent(this, NewTweetActivity.class), NEW_TWEET);
+                if(authorized) {
+                    startActivityForResult(new Intent(this, NewTweetActivity.class), NEW_TWEET);
+                }
+                else{
+                    title = getResources().getString(R.string.not_authorized_tweet_title);
+                    dialogInfo.setTitle(title);
+                    dialogInfo.show(getSupportFragmentManager(), "not authorized");
+                }
                 break;
             case R.id.action_profile_view:
-                startActivityForResult(new Intent(this, ViewProfileActivity.class).putExtra("isDhowMySelf",true), VIEW_PROFILE);
+                if(authorized) {
+                    startActivityForResult(new Intent(this, ViewProfileActivity.class).putExtra("isDhowMySelf", true), VIEW_PROFILE);
+                }
+                else{
+                    dialogInfo.show(getSupportFragmentManager(), "not authorized");
+                }
                 break;
             case R.id.action_search:
-                startActivityForResult(new Intent(this, SearchActivity.class), SEARCH_USERS);
+                if(authorized) {
+                    startActivityForResult(new Intent(this, SearchActivity.class), SEARCH_USERS);
+                }
+                else{
+                    title = getResources().getString(R.string.not_authorized_search_title);
+                    dialogInfo.setTitle(title);
+                    dialogInfo.show(getSupportFragmentManager(), "not authorized");
+                }
+                break;
+
+            case R.id.action_refresh_tweets_list:
+                if(authorized) {
+                    new getAccauntInfo(this).execute((Void) null);
+                }
+                else{
+                    getAccessToken();
+                }
                 break;
         }
 
@@ -370,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
-                        if (url.contains("oauth_verifier") && authComplete == false) {
+                        if (url.contains("oauth_verifier") && (!authComplete)) {
                             authComplete = true;
                             Uri uri = Uri.parse(url);
                             verifier = uri.getQueryParameter("oauth_verifier");
@@ -378,7 +477,8 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                             //revoke access token asynctask
                             new GetAccessToken((MainActivity) getActivity()).execute();
                         } else if (url.contains("denied")) {
-
+                            ((MainActivity)getActivity()).progressBar.setVisibility(View.GONE);
+                            dismiss();
                         }
                     }
                 });
@@ -425,8 +525,16 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
     public void onActivityResult(int requestCode, int resultCode,Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         progressBar.setVisibility(View.VISIBLE);
+        noConnection.setVisibility(View.GONE);
         homeTimeline.setVisibility(View.GONE);
-        new getAccauntInfo(this).execute((Void) null);
+        if(new InternetConnectionChecker(this).isConnected()) {
+            new getAccauntInfo(this).execute((Void) null);
+        }
+        else{
+            progressBar.setVisibility(View.GONE);
+            noConnection.setVisibility(View.VISIBLE);
+            homeTimeline.setVisibility(View.GONE);
+        }
 
     }
 }
