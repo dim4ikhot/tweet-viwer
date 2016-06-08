@@ -216,10 +216,18 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
             Call<VerifyCredentials> verifyCredentialsCall = Internet.service.getVerifyCredentials();
             Call<List<CommonStatusClass>> callHomeStatuses = Internet.service.getHomeTimeline(100);
             try {
-                Call<User> userCall = Internet.service.getUser(result.execute().body().getScreenName());
-                Internet.currentUser = userCall.execute().body();
+                AccauntSettings temp = result.execute().body();
+                Call<User> userCall = null;
+                if(temp != null) {
+                    userCall = Internet.service.getUser(temp.getScreenName());
+                }
+                if(userCall!= null) {
+                    Internet.currentUser = userCall.execute().body();
+                }
                 Internet.verifyCredentials = verifyCredentialsCall.execute().body();
-                profileImage = Internet.currentUser.getProfileImageUrlHttps();
+                if(Internet.currentUser != null) {
+                    profileImage = Internet.currentUser.getProfileImageUrlHttps();
+                }
                 activeActivity.homeStatuses = callHomeStatuses.execute().body();
             }catch(Exception e){
                 e.printStackTrace();
@@ -236,11 +244,14 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
         }
         @Override
         protected void onPostExecute(String result){
-            String title = Internet.currentUser.getName().length() > 20?
-                    Internet.currentUser.getName().substring(0,19) + "...":
-                    Internet.currentUser.getName();
+            String title = "";
+            if(Internet.currentUser != null) {
+                title = Internet.currentUser.getName().length() > 20 ?
+                        Internet.currentUser.getName().substring(0, 19) + "..." :
+                        Internet.currentUser.getName();
+                activeActivity.authorized = true;
+            }
             activeActivity.profile.setTitle(title);
-            activeActivity.authorized = true;
             if(bmp != null) {
                 BitmapDrawable bmpDrawable = new BitmapDrawable(context.getResources(), bmp);
                 activeActivity.profile.setIcon(bmpDrawable);
