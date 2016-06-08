@@ -104,11 +104,16 @@ public class TweetsViewAdapter extends BaseAdapter {
         String screenNAme = "@" + status.getUser().getScreenName();
         txtscreenName.setText(screenNAme);
         //txtTweetText.setText(status.getText());
-        if(status.getRetweeted()){
-            imgRetweet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_repeat_blue_24dp));
+        if(!status.getUser().getIdStr().equals(Internet.currentUser.getIdStr())) {
+            if (status.getRetweeted()) {
+                imgRetweet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_repeat_blue_24dp));
+            } else {
+                imgRetweet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_repeat_black_24dp));
+            }
+            imgRetweet.setEnabled(true);
         }
         else{
-            imgRetweet.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_repeat_black_24dp));
+            imgRetweet.setEnabled(false);
         }
         if(status.getFavorited()) {
             imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_favorite_blue_24dp));

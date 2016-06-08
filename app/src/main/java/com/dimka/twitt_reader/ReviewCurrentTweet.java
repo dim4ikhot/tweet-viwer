@@ -60,12 +60,7 @@ public class ReviewCurrentTweet extends AppCompatActivity implements View.OnClic
         }
         imgFavorite = (ImageView)findViewById(R.id.image_status_favorite);
         if(imgFavorite != null){
-            imgFavorite.setOnClickListener(this/*new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v != null){}
-                }
-            }*/);
+            imgFavorite.setOnClickListener(this);
         }
         imgDelete = (ImageView)findViewById(R.id.delete_status);
         if(imgDelete != null){
@@ -95,10 +90,14 @@ public class ReviewCurrentTweet extends AppCompatActivity implements View.OnClic
         txtRetweetCount.setText(String.valueOf(Internet.currentStatus.getRetweetCount()));
         dateCreate.setText(Internet.currentStatus.getCreatedAt().substring(0,Internet.currentStatus.getCreatedAt().indexOf("+")));
         txtFavoriteCount.setText(String.valueOf(Internet.currentStatus.getFavoriteCount()));
-        if (Internet.currentStatus.getRetweeted()) {
-            imgRetweet.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_repeat_blue_24dp));
-        } else {
-            imgRetweet.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_repeat_black_24dp));
+        if(!Internet.currentStatus.getUser().getIdStr().equals(Internet.currentUser.getIdStr())) {
+            if (Internet.currentStatus.getRetweeted()) {
+                imgRetweet.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_repeat_blue_24dp));
+            } else {
+                imgRetweet.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_repeat_black_24dp));
+            }
+        }else{
+            imgRetweet.setEnabled(false);
         }
         if(Internet.currentStatus.getFavorited()) {
             imgFavorite.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_favorite_blue_24dp));

@@ -432,6 +432,9 @@ public class MainActivity extends AppCompatActivity implements TweetsViewAdapter
                 break;
 
             case R.id.action_refresh_tweets_list:
+                progressBar.setVisibility(View.VISIBLE);
+                noConnection.setVisibility(View.GONE);
+                homeTimeline.setVisibility(View.GONE);
                 if(authorized) {
                     new getAccauntInfo(this).execute((Void) null);
                 }

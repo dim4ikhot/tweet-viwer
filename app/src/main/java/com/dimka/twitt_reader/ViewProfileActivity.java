@@ -55,7 +55,7 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
     User user;
     boolean isShowMyself;
     TweetsViewAdapter adapter;
-    ScrollView scrollTest;
+    LinearLayout profileProgress, profileMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +127,8 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
     }
 
     private void initControls(){
+        profileProgress = (LinearLayout)findViewById(R.id.profile_progress);
+        profileMain = (LinearLayout)findViewById(R.id.profileMainScreen);
         headerImage = (ImageView)findViewById(R.id.image_header);
         profileImage = (ImageView)findViewById(R.id.profile_image);
         editProfile = (Button)findViewById(R.id.button_edit_profile);
@@ -163,6 +165,8 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
     }
 
     private void fillsControl(){
+        profileProgress.setVisibility(View.VISIBLE);
+        profileMain.setVisibility(View.GONE);
         new LoadProfileParams(this).execute((Void)null);
     }
 
@@ -202,14 +206,7 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
             if(bmpProfileIcon != null) {
                 profileImage.setImageBitmap(bmpProfileIcon);
             }
-            if(user.getFollowing()){
-                addNewUser.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
-                addNewUser.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_person_ok_black_24dp));
-            }
-            else{
-                addNewUser.setBackgroundColor(Color.WHITE);
-                addNewUser.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_person_add_black_24dp));
-            }
+            setButtonColor(context, user.getFollowing());
 
             String reading = "" + user.getFriendsCount();
             readingCount.setText(reading);
@@ -249,9 +246,23 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
                     usersTweets.setSelection(to);
                 }
             }
+
+            profileProgress.setVisibility(View.GONE);
+            profileMain.setVisibility(View.VISIBLE);
         }
     }
 
+
+    private void setButtonColor(Context context, boolean isFolofing){
+        if(isFolofing){
+            addNewUser.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
+            addNewUser.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_person_ok_black_24dp));
+        }
+        else{
+            addNewUser.setBackgroundColor(Color.WHITE);
+            addNewUser.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_person_add_black_24dp));
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -263,15 +274,19 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
         return super.onOptionsItemSelected(item);
     }
 
-    private class CreateDestroyFriendship extends AsyncTask<Boolean,Void,Void>{
+    private class CreateDestroyFriendship extends AsyncTask<Boolean,Void,Boolean>{
+
         @Override
-        protected Void doInBackground(Boolean... params) {
+        protected Boolean doInBackground(Boolean... params) {
+            boolean isFolowing;
             Call<User> fiendshipCall;
             if(!params[0]){
                 fiendshipCall = Internet.service.createFriendship(user.getId());
+                isFolowing = true;
             }
             else{
                 fiendshipCall = Internet.service.destroyFriendship(user.getId());
+                isFolowing = false;
             }
             try {
                 fiendshipCall.execute().body();
@@ -279,7 +294,12 @@ public class ViewProfileActivity extends AppCompatActivity implements TweetsView
                 e.printStackTrace();
             }
 
-            return null;
+            return isFolowing;
+        }
+
+        @Override
+        public void onPostExecute(Boolean result){
+            setButtonColor(ViewProfileActivity.this, result);
         }
     }
 

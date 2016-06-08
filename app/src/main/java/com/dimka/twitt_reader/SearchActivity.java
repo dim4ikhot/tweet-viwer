@@ -3,9 +3,11 @@ package com.dimka.twitt_reader;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,12 +32,17 @@ public class SearchActivity extends AppCompatActivity {
     EditText searchEdit;
     ListView foundUsers;
     FoundUsersAdapter foundAdapter;
+    ActionBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
+        bar =getSupportActionBar();
+        if(bar != null){
+            bar.setHomeButtonEnabled(true);
+            bar.setDisplayHomeAsUpEnabled(true);
+        }
         searchButton = (ImageButton)findViewById(R.id.button_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +92,17 @@ public class SearchActivity extends AppCompatActivity {
                 foundUsers.setAdapter(foundAdapter);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private class FoundUsersAdapter extends BaseAdapter{
