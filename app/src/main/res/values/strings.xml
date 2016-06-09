@@ -41,6 +41,8 @@
 
     <!-- Dialog Messages-->
     <string name="not_authorized_message">User not authorized</string>
+    <string name="load_image_error_message">You can load only files less then 700 Kb.</string>
+    <string name="error_send_status_dialog_message">Ooops. Something wrong&#8230;</string>
 
 
     <!--HINTS-->

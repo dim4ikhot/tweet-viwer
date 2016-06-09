@@ -16,7 +16,7 @@
             android:id="@+id/img_avatar"
             android:focusable="false"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_mail_outline_black_24dp"/>
+            android:src="@mipmap/ic_mail_outline"/>
 
     </LinearLayout>
 
@@ -134,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/img_answer_tweet"
                     android:focusable="false"
-                    android:src="@drawable/ic_reply_black_24dp"/>
+                    android:src="@mipmap/ic_reply"/>
 
             </LinearLayout>
 
@@ -150,7 +150,7 @@
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:id="@+id/img_retweet"
-                    android:src="@drawable/ic_repeat_black_24dp"/>
+                    android:src="@mipmap/ic_repeat"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:id="@+id/img_like_tweet"
-                    android:src="@drawable/ic_favorite_border_black_24dp"/>
+                    android:src="@mipmap/ic_favorite_border"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -197,7 +197,7 @@
                 android:id="@+id/img_add_friend"
                 android:visibility="gone"
                 android:focusable="false"
-                android:src="@drawable/ic_person_add_black_24dp"/>
+                android:src="@mipmap/ic_person_add"/>
 
         </LinearLayout>
 

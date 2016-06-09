@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.dimka.twitt_reader.ViewProfileActivity">
+    tools:context="ua.tweets_reader.ViewProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_marginLeft="40dp"
-                        android:src="@drawable/ic_person_add_black_24dp"
+                        android:src="@mipmap/ic_person_add"
                         android:background="@android:color/white"
                         android:textColor="@color/colorPrimary"
                         android:visibility="gone"

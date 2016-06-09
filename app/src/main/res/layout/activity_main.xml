@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.dimka.twitt_reader.MainActivity">
+    tools:context="ua.tweets_reader.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -31,6 +31,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorPrimary"
         android:visibility="gone"
-        android:src="@drawable/ic_mail_outline_black_24dp" />
+        android:src="@mipmap/ic_mail_outline" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.dimka.twitt_reader.SearchActivity">
+    tools:context="ua.tweets_reader.SearchActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:background="@android:color/white"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_search_black_24dp"/>
+            android:src="@mipmap/ic_search"/>
     </LinearLayout>
 
     <ListView
