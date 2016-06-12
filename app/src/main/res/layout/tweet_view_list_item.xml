@@ -15,8 +15,7 @@
             android:layout_height="72dp"
             android:id="@+id/img_avatar"
             android:focusable="false"
-            android:scaleType="fitXY"
-            android:src="@mipmap/ic_mail_outline"/>
+            android:scaleType="fitXY" />
 
     </LinearLayout>
 
@@ -112,8 +111,7 @@
                 android:layout_height="128dp"
                 android:id="@+id/img_of_tweet"
                 android:scaleType="fitXY"
-                android:focusable="false"
-                android:src="@mipmap/tweet_launch"/>
+                android:focusable="false" />
 
         <!--</LinearLayout>-->
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ua.tweets_reader.MainActivity"
+    tools:context="ua.tweetsreader.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <TextView
@@ -43,5 +43,18 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text = "@string/no_internet_connection_title"/>
+
+    <Button
+        android:id="@+id/button_new_tweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:text="@string/button_add_new_tweet_title"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        />
 
 </RelativeLayout>

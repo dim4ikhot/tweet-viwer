@@ -33,36 +33,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="ua.tweets_reader.MainActivity"
+            android:name="ua.tweetsreader.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <intent-filter>
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="twitterlogin"
                     android:scheme="x-oauthflow-twitter" />
             </intent-filter>
         </activity>
         <activity
-            android:name="ua.tweets_reader.tweet.NewTweetActivity"
+            android:name="ua.tweetsreader.tweet.NewTweetActivity"
             android:label="@string/title_activity_new_tweet"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="ua.tweets_reader.ViewProfileActivity"
+            android:name="ua.tweetsreader.ViewProfileActivity"
             android:label="@string/title_activity_view_profile" />
         <activity
-            android:name="ua.tweets_reader.EditProfileActivity"
+            android:name="ua.tweetsreader.EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="ua.tweets_reader.ReviewCurrentTweet" />
-        <activity android:name="ua.tweets_reader.SearchActivity"></activity>
+        <activity android:name="ua.tweetsreader.ReviewCurrentTweet" />
+        <activity android:name="ua.tweetsreader.SearchActivity"></activity>
     </application>
 
 </manifest>

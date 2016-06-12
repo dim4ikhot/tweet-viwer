@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ua.tweets_reader.tweet.NewTweetActivity"
+    tools:context="ua.tweetsreader.tweet.NewTweetActivity"
     tools:showIn="@layout/activity_new_tweet">
 
     <EditText

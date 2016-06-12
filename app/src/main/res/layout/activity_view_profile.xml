@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ua.tweets_reader.ViewProfileActivity">
+    tools:context="ua.tweetsreader.ViewProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/profile_progress"
+        android:orientation="vertical"
         android:gravity="center">
 
         <ProgressBar
@@ -192,6 +193,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
+            android:id="@+id/profile_tweets"
             android:layout_weight="1">
 
             <TextView
@@ -207,6 +209,27 @@
                 android:layout_height="match_parent"
                 android:id="@+id/usersTweets"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:id="@+id/new_tweet_in_profile"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="1">
+
+
+            <Button
+                android:id="@+id/profile_add_new_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_add_new_tweet_title"
+                android:textColor="@android:color/white"
+                android:background="@color/colorPrimary"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
