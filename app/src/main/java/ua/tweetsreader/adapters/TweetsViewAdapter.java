@@ -128,18 +128,19 @@ public class TweetsViewAdapter extends BaseAdapter {
         favoriteCount.setText(String.valueOf(status.getFavoriteCount()));
         tweetLink.setVisibility(View.GONE);
         tweetUserLink.setVisibility(View.GONE);
-        tweetUserLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = ((TextView)v).getText().toString();
-                context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)));
-            }
-        });
 
         for (Url url: status.getEntities().getUrls()){
             if(status.getText().contains(url.getUrl())){
                 tweetLink.setVisibility(View.VISIBLE);
                 tweetLink.setText(url.getDisplayUrl());
+                tweetLink.setTag(url.getUrl());
+                tweetLink.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String url = (String)v.getTag();
+                        context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)));
+                    }
+                });
                 break;
             }
         }
